@@ -1,0 +1,155 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>cloud.contoterzi</groupId>
+    <artifactId>helpdesk-backend</artifactId>
+    <name>helpdesk-backend (parent)</name>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+
+    <!-- Common properties -->
+    <properties>
+        <maven.compiler.release>17</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <junit.jupiter.version>5.10.2</junit.jupiter.version>
+        <jackson.version>2.17.1</jackson.version>
+        <snakeyaml.version>2.2</snakeyaml.version>
+        <aws.sdk.version>2.25.30</aws.sdk.version>
+    </properties>
+
+    <!-- Always available modules (portable at 100%) -->
+    <modules>
+        <module>helpdesk-core</module>
+        <module>helpdesk-similarity</module>
+    </modules>
+
+    <!-- Centralized versions for child modules -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>software.amazon.awssdk</groupId>
+                <artifactId>bom</artifactId>
+                <version>${aws.sdk.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- Jackson (core + databind) -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>${snakeyaml.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter</artifactId>
+                <version>${junit.jupiter.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- Forces all the Netty to the same patched version -->
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-bom</artifactId>
+                <version>4.1.119.Final</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <!-- Common plugins -->
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.11.0</version>
+                    <configuration>
+                        <release>${maven.compiler.release}</release>
+                        <encoding>${project.build.sourceEncoding}</encoding>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>3.2.5</version>
+                    <configuration>
+                        <useModulePath>false</useModulePath>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-shade-plugin</artifactId>
+                    <version>3.2.4</version>
+                    <executions>
+                        <execution>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>shade</goal>
+                            </goals>
+                            <configuration>
+                                <transformers>
+                                    <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                                </transformers>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <!-- Profiles to include or exclude provider/app modules -->
+    <profiles>
+        <!-- Build AWS: LLM Anthropic (Bedrock), Storage S3, App Lambda -->
+        <profile>
+            <id>awsClaude</id>
+            <modules>
+                <module>helpdesk-aws-common</module>
+                <module>helpdesk-storage-s3</module>
+                <module>helpdesk-llm-aws-claude</module>
+            </modules>
+        </profile>
+        <!-- Build AWS: LLM Nova -->
+        <profile>
+            <id>awsNova</id>
+            <modules>
+                <module>helpdesk-aws-common</module>
+                <module>helpdesk-storage-s3</module>
+                <module>helpdesk-llm-aws-nova</module>
+            </modules>
+        </profile>
+        <!-- Build Ollama: Local LLM (unified for all models) -->
+        <profile>
+            <id>ollama</id>
+            <modules>
+                <module>helpdesk-aws-common</module>
+                <module>helpdesk-storage-s3</module>
+                <module>helpdesk-llm-ollama</module>
+            </modules>
+        </profile>
+        <!-- Complete Build: all the modules -->
+        <profile>
+            <id>all</id>
+            <modules>
+                <module>helpdesk-aws-common</module>
+                <module>helpdesk-storage-s3</module>
+                <module>helpdesk-llm-aws-claude</module>
+                <module>helpdesk-llm-aws-nova</module>
+                <module>helpdesk-llm-azure-openai</module>
+                <module>helpdesk-llm-ibm-watson</module>
+                <module>helpdesk-llm-ollama</module>
+            </modules>
+        </profile>
+    </profiles>
+</project>

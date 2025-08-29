@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/helpdesk-app-cli/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/helpdesk-app-cli/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/helpdesk-app-common/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/helpdesk-app-common/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/helpdesk-app-lambda/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/helpdesk-app-lambda/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/helpdesk-aws-common/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/helpdesk-aws-common/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/helpdesk-core/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/helpdesk-core/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/helpdesk-lambda/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/helpdesk-lambda/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/helpdesk-llm-aws-claude/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/helpdesk-llm-aws-claude/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/helpdesk-llm-aws-nova/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/helpdesk-llm-aws-nova/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/helpdesk-llm-azure-openai/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/helpdesk-llm-azure-openai/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/helpdesk-llm-ibm-watson/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/helpdesk-llm-ibm-watson/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/helpdesk-llm-ollama-gptoss/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/helpdesk-llm-ollama-gptoss/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/helpdesk-llm-ollama/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/helpdesk-llm-ollama/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/helpdesk-similarity/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/helpdesk-similarity/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/helpdesk-storage-fs/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/helpdesk-storage-fs/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/helpdesk-storage-s3/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/helpdesk-storage-s3/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
+  </component>
+</project>

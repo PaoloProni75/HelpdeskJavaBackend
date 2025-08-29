@@ -1,0 +1,99 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <properties>
+        <maven.compiler.release>17</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+    <parent>
+        <groupId>cloud.contoterzi</groupId>
+        <artifactId>helpdesk-backend</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>helpdesk-llm-ollama</artifactId>
+    <name>helpdesk-llm-ollama</name>
+    <packaging>jar</packaging>
+
+    <build>
+        <plugins>
+            <!-- Maven Shade Plugin per creare fat JAR con tutti i provider SPI -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.4</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                            </transformers>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <!-- Core API (LlmClient, MappingService contracts, etc...) -->
+        <dependency>
+            <groupId>cloud.contoterzi</groupId>
+            <artifactId>helpdesk-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        
+        <!-- AWS Common (shared Lambda handler logic) -->
+        <dependency>
+            <groupId>cloud.contoterzi</groupId>
+            <artifactId>helpdesk-aws-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- HTTP Client for Ollama API calls -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        
+        <!-- SPI Provider dependencies for fat JAR -->
+        <dependency>
+            <groupId>cloud.contoterzi</groupId>
+            <artifactId>helpdesk-storage-s3</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>cloud.contoterzi</groupId>
+            <artifactId>helpdesk-similarity</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        
+        <!-- Test: JUnit Jupiter 5 (parent version) -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- Test: Mockito for mocking -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.8.0</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>

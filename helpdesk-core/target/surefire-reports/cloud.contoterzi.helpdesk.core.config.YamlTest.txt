@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: cloud.contoterzi.helpdesk.core.config.YamlTest
+-------------------------------------------------------------------------------
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.040 s -- in cloud.contoterzi.helpdesk.core.config.YamlTest

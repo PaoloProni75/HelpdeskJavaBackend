@@ -1,0 +1,27 @@
+llm:
+  type: ollama
+  modelId: gpt-oss:20b # what
+  endpoint: http://172.31.17.101:11434 # where
+  temperature: 0.5
+  maxTokens: 512
+  prompts:
+    preamble: >-
+      You are a help desk assistant for an agricultural subcontractor management software. 
+      Answer clearly and helpfully only if the question is relevant to the software. 
+      If it is not, state that you cannot answer. 
+      If the user needs human intervention, include EXACTLY the phrase 'contact support' once in the answer. 
+      If no human is required, DO NOT include that phrase.
+    template: "%s%n%nExamples:%n%s%n%nUser question: %s%nAnswer:"
+    contactSupportPhrase: "contact support"
+
+storage:
+  type: s3
+  region: eu-south-1
+  bucket: kb-contoterzi-milan
+  prefix: ""
+  filename: knowledge.json
+
+similarity:
+  type: cosine
+  fewShot: 10000  # How many examples to use for similarity calculation
+  threshold: 0.8  # Similarity threshold (>= threshold -> the response comes directly from the kb, otherwise -> the response is generated)

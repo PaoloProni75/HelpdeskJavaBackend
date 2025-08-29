@@ -1,0 +1,119 @@
+# Esempi di configurazione per diversi modelli Ollama
+# Copia la sezione desiderata nella tua configurazione principale
+
+# =============================================================================
+# GPT4All - Modello generico bilanciato
+# =============================================================================
+gpt4all_config:
+  llm:
+    type: ollama
+    endpoint: http://YOUR_VM_IP:11434
+    modelId: gpt4all
+    temperature: 0.4
+    maxTokens: 1024
+    prompts:
+      preamble: >- 
+                You are a help desk assistant for an agricultural subcontractor management software. 
+                Answer clearly and helpfully only if the question is relevant to the software. 
+                If it is not, state that you cannot answer. 
+                If the user needs human intervention, include EXACTLY the phrase 'contact support' once in the answer. 
+                If no human is required, DO NOT include that phrase.
+      template: "%s%n%nExamples:%n%s%n%nUser question: %s%nAnswer:"
+      contactSupportPhrase: "contact support"
+
+# =============================================================================
+# Mistral - Ottimo per conversazioni e supporto tecnico
+# =============================================================================
+mistral_config:
+  llm:
+    type: ollama
+    endpoint: http://YOUR_VM_IP:11434
+    modelId: mistral
+    temperature: 0.3              # Temperature più bassa per Mistral
+    maxTokens: 2048               # Supporta contesti più lunghi
+    prompts:
+      preamble: >- 
+                You are a help desk assistant for an agricultural subcontractor management software. 
+                Answer clearly and helpfully only if the question is relevant to the software. 
+                If it is not, state that you cannot answer. 
+                If the user needs human intervention, include EXACTLY the phrase 'contact support' once in the answer. 
+                If no human is required, DO NOT include that phrase.
+      template: "%s%n%nExamples:%n%s%n%nUser question: %s%nAnswer:"
+      contactSupportPhrase: "contact support"
+
+# =============================================================================
+# Nemotron Mini - NVIDIA, veloce ed efficiente
+# =============================================================================
+nemotron_mini_config:
+  llm:
+    type: ollama
+    endpoint: http://YOUR_VM_IP:11434
+    modelId: nemotron-mini
+    temperature: 0.4
+    maxTokens: 1024
+    prompts:
+      preamble: >- 
+                You are a help desk assistant for an agricultural subcontractor management software. 
+                Answer clearly and helpfully only if the question is relevant to the software. 
+                If it is not, state that you cannot answer. 
+                If the user needs human intervention, include EXACTLY the phrase 'contact support' once in the answer. 
+                If no human is required, DO NOT include that phrase.
+      template: "%s%n%nExamples:%n%s%n%nUser question: %s%nAnswer:"
+      contactSupportPhrase: "contact support"
+
+# =============================================================================
+# Llama2 - Meta, versatile e affidabile
+# =============================================================================
+llama2_config:
+  llm:
+    type: ollama
+    endpoint: http://YOUR_VM_IP:11434
+    modelId: llama2
+    temperature: 0.4
+    maxTokens: 1024
+    prompts:
+      preamble: >- 
+                You are a help desk assistant for an agricultural subcontractor management software. 
+                Answer clearly and helpfully only if the question is relevant to the software. 
+                If it is not, state that you cannot answer. 
+                If the user needs human intervention, include EXACTLY the phrase 'contact support' once in the answer. 
+                If no human is required, DO NOT include that phrase.
+      template: "%s%n%nExamples:%n%s%n%nUser question: %s%nAnswer:"
+      contactSupportPhrase: "contact support"
+
+# =============================================================================
+# CodeLlama - Specializzato per supporto tecnico e codice
+# =============================================================================
+codellama_config:
+  llm:
+    type: ollama
+    endpoint: http://YOUR_VM_IP:11434
+    modelId: codellama
+    temperature: 0.2              # Temperature più bassa per codice
+    maxTokens: 1024
+    prompts:
+      preamble: >- 
+                You are a technical help desk assistant for an agricultural subcontractor management software. 
+                You excel at explaining technical concepts and troubleshooting code-related issues.
+                Answer clearly and helpfully only if the question is relevant to the software. 
+                If it is not, state that you cannot answer. 
+                If the user needs human intervention, include EXACTLY the phrase 'contact support' once in the answer. 
+                If no human is required, DO NOT include that phrase.
+      template: "%s%n%nExamples:%n%s%n%nUser question: %s%nAnswer:"
+      contactSupportPhrase: "contact support"
+
+# =============================================================================
+# Configurazione storage e similarity (identica per tutti)
+# =============================================================================
+common_config:
+  storage:
+    type: s3
+    region: eu-north-1
+    bucket: your-bucket
+    prefix: ""
+    filename: knowledge.json
+
+  similarity:
+    type: cosine
+    fewShot: 10000
+    threshold: 0.8

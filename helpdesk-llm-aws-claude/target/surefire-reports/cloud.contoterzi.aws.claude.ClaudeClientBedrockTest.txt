@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: cloud.contoterzi.aws.claude.ClaudeClientBedrockTest
+-------------------------------------------------------------------------------
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.057 s -- in cloud.contoterzi.aws.claude.ClaudeClientBedrockTest
