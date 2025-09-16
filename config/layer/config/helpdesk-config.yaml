@@ -2,11 +2,12 @@ llm:
   type: azure-openai
   azure:
     endpoint: "https://openai-contoterzi.openai.azure.com/"
-    deploymentName: "gpt35turbo"
+    deploymentName: "o3-mini"
     apiVersion: "2024-12-01-preview"
     apiKey: "EWPNnLGBUU8ws866wuLaW3htvY0wcwThtRBpdPJ0ttMBipENsObrJQQJ99BFAC5RqLJXJ3w3AAABACOGO85o"
-  temperature: 0.5
-  maxTokens: 512
+  temperature: 0.3
+  maxTokens: 1024
+  reasoningEffort: "low"
   prompts:
     preamble: >-
       You are a help desk assistant for an agricultural subcontractor management software.

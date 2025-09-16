@@ -56,7 +56,14 @@
       "Bash(APP_CONFIG_PATH=\"classpath:helpdesk-config.yaml\")",
       "Bash(az storage blob upload:*)",
       "Bash(echo \"Blob: $BLOB\")",
-      "Bash(echo:*)"
+      "Bash(echo:*)",
+      "Bash(APP=\"helpdesk-function-app\")",
+      "Bash(export RG=\"conto-terzi-rg\")",
+      "Bash(export APP=\"helpdesk-function-app\")",
+      "Bash(az monitor app-insights component list:*)",
+      "WebSearch",
+      "WebFetch(domain:mvnrepository.com)",
+      "WebFetch(domain:central.sonatype.com)"
     ],
     "deny": [],
     "ask": []
