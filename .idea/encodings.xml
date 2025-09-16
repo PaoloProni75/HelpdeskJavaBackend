@@ -9,6 +9,8 @@
     <file url="file://$PROJECT_DIR$/helpdesk-app-lambda/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/helpdesk-aws-common/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/helpdesk-aws-common/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/helpdesk-azure-common/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/helpdesk-azure-common/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/helpdesk-core/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/helpdesk-core/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/helpdesk-lambda/src/main/java" charset="UTF-8" />
@@ -27,6 +29,8 @@
     <file url="file://$PROJECT_DIR$/helpdesk-llm-ollama/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/helpdesk-similarity/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/helpdesk-similarity/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/helpdesk-storage-blob/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/helpdesk-storage-blob/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/helpdesk-storage-fs/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/helpdesk-storage-fs/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/helpdesk-storage-s3/src/main/java" charset="UTF-8" />

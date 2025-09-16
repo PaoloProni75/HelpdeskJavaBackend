@@ -1,8 +1,8 @@
 package cloud.contoterzi.similarity;
 
+import cloud.contoterzi.helpdesk.core.config.YamlConfig;
 import cloud.contoterzi.helpdesk.core.model.IKnowledge;
 import cloud.contoterzi.helpdesk.core.model.KnowledgeBestMatch;
-import cloud.contoterzi.helpdesk.core.model.impl.AppConfig;
 import cloud.contoterzi.helpdesk.core.similarity.SimilarityAlgorithm;
 import cloud.contoterzi.helpdesk.core.spi.SimilarityService;
 
@@ -27,7 +27,7 @@ public class CosineSequenceMatcherService implements SimilarityService {
     }
 
     @Override
-    public void init(AppConfig appConfig) {
+    public void init(YamlConfig appConfig) {
         // No special initialization needed for cosine similarity
     }
 

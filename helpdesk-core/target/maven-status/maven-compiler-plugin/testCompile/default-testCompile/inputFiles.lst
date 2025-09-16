@@ -1,6 +1,5 @@
 /Users/paoloproni/Documents/UniBZ/Tesi/JavaLambda/helpdesk-core/src/test/java/cloud/contoterzi/helpdesk/core/engine/HelpdeskEngineTest.java
-/Users/paoloproni/Documents/UniBZ/Tesi/JavaLambda/helpdesk-core/src/test/java/cloud/contoterzi/helpdesk/core/config/PromptsConfigTest.java
-/Users/paoloproni/Documents/UniBZ/Tesi/JavaLambda/helpdesk-core/src/test/java/cloud/contoterzi/helpdesk/core/config/YamlTest.java
+/Users/paoloproni/Documents/UniBZ/Tesi/JavaLambda/helpdesk-core/src/test/java/cloud/contoterzi/helpdesk/core/llm/AbstractOpenAIDriverTest.java
 /Users/paoloproni/Documents/UniBZ/Tesi/JavaLambda/helpdesk-core/src/test/java/cloud/contoterzi/helpdesk/core/engine/EnvironmentVariableTest.java
 /Users/paoloproni/Documents/UniBZ/Tesi/JavaLambda/helpdesk-core/src/test/java/cloud/contoterzi/helpdesk/core/engine/TemplateTest.java
 /Users/paoloproni/Documents/UniBZ/Tesi/JavaLambda/helpdesk-core/src/test/java/cloud/contoterzi/helpdesk/core/engine/HelpdeskEngineSystemTest.java

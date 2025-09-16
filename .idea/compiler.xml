@@ -6,24 +6,26 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="helpdesk-llm-openai" />
+        <module name="helpdesk-storage-blob" />
         <module name="helpdesk-core" />
-        <module name="helpdesk-storage-s3" />
         <module name="helpdesk-similarity" />
-        <module name="helpdesk-aws-common" />
-        <module name="helpdesk-llm-ollama" />
+        <module name="helpdesk-azure-common" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="helpdesk-app-cli" target="17" />
       <module name="helpdesk-app-common" target="17" />
       <module name="helpdesk-app-lambda" target="17" />
+      <module name="helpdesk-aws-common" target="17" />
       <module name="helpdesk-lambda" target="17" />
       <module name="helpdesk-llm-aws-claude" target="17" />
       <module name="helpdesk-llm-aws-nova" target="17" />
       <module name="helpdesk-llm-ibm-watsonx" target="17" />
+      <module name="helpdesk-llm-ollama" target="17" />
       <module name="helpdesk-llm-ollama-gptoss" target="17" />
-      <module name="helpdesk-llm-openai" target="17" />
       <module name="helpdesk-storage-fs" target="17" />
+      <module name="helpdesk-storage-s3" target="17" />
     </bytecodeTargetLevel>
   </component>
 </project>

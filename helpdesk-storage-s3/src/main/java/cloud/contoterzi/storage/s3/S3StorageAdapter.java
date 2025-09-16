@@ -1,4 +1,4 @@
-package cloud.contoterzi.storage.s3;
+ package cloud.contoterzi.storage.s3;
 
 import cloud.contoterzi.helpdesk.core.model.IAppConfig;
 import cloud.contoterzi.helpdesk.core.model.IKnowledge;

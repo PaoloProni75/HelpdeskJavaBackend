@@ -1,6 +1,6 @@
 package cloud.contoterzi.helpdesk.core.storage;
 
-import cloud.contoterzi.helpdesk.core.model.IAppConfig;
+import cloud.contoterzi.helpdesk.core.config.YamlConfig;
 import cloud.contoterzi.helpdesk.core.model.IKnowledge;
 import java.io.IOException;
 import java.util.List;
@@ -29,7 +29,7 @@ public interface StorageAdapter {
      * Initializes the adapter with the given application configuration.
      * @param appConfig the application configuration to use for initialization
      */
-    void init(IAppConfig appConfig);
+    void init(YamlConfig appConfig);
 
     /**
      * Loads the knowledge base from the storage system.

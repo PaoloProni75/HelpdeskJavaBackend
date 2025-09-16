@@ -8,6 +8,8 @@
       <sourceFolder url="file://$MODULE_DIR$/helpdesk-llm-aws-nova/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/helpdesk-llm-ollama-gptoss/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/helpdesk-llm-ollama-gptoss/src/main/resources" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/helpdesk-azure-common/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/helpdesk-storage-blob/src/main/java" isTestSource="false" />
     </content>
   </component>
 </module>

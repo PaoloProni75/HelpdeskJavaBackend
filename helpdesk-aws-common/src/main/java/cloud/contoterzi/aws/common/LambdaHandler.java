@@ -1,6 +1,7 @@
 package cloud.contoterzi.aws.common;
 
 import cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine;
+import cloud.contoterzi.helpdesk.core.handler.HandlerConstants;
 import cloud.contoterzi.helpdesk.core.model.HelpdeskRequest;
 import cloud.contoterzi.helpdesk.core.model.HelpdeskResponse;
 import com.amazonaws.services.lambda.runtime.Context;
@@ -12,12 +13,16 @@ import java.util.Map;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
-public class LambdaHandler implements RequestHandler<Map<String, Object>, HelpdeskResponse> {
+import java.util.concurrent.locks.ReentrantLock;
+
+
+public class LambdaHandler implements RequestHandler<Map<String, Object>, HelpdeskResponse>, HandlerConstants {
     private static final Logger LOGGER = Logger.getLogger(LambdaHandler.class.getName());
 
     // Static engine - initialized only once
     private static HelpdeskEngine engine;
-    private static final Object ENGINE_LOCK = new Object();
+    private static final ReentrantLock ENGINE_LOCK = new ReentrantLock();
+
 
     static {
         // initialization during class loading
@@ -30,20 +35,18 @@ public class LambdaHandler implements RequestHandler<Map<String, Object>, Helpde
     }
 
     private static void initializeEngine() throws IOException {
-        synchronized (ENGINE_LOCK) {
+        ENGINE_LOCK.lock();
+        try {
             if (engine == null) {
                 engine = new HelpdeskEngine();
                 engine.init();
                 LOGGER.info("Static engine initialized");
             }
         }
+        finally {
+            ENGINE_LOCK.unlock();
+        }
     }
-
-    // Request keys
-    private static final String KEY_QUESTION = "question";
-
-    // Messages
-    private static final String MSG_MISSING_QUESTION = "Missing question";
 
     public LambdaHandler() {
         // Lazy initialization will happen on first request
@@ -53,12 +56,12 @@ public class LambdaHandler implements RequestHandler<Map<String, Object>, Helpde
     public HelpdeskResponse handleRequest(Map<String, Object> event, Context context) {
         final String reqId = (context != null) ? context.getAwsRequestId() : "n/a";
         // Handle warmup requests
-        if (event != null && "warmup".equals(event.get("source"))) {
-            LOGGER.log(Level.INFO, () -> String.format("Warmup request reqId=%s", reqId));
+        if (event != null && WARMUP_SOURCE.equals(event.get("source"))) {
+            LOGGER.log(Level.INFO, () -> String.format(LOG_WARMUP_REQUEST, reqId));
             return HelpdeskResponse.builder()
-                    .answer("warmed")
-                    .source("system")
-                    .action("none")
+                    .answer(MSG_WARMED)
+                    .source(SOURCE_SYSTEM)
+                    .action(ACTION_NONE)
                     .escalation(false)
                     .confidence(1.0)
                     .responseTimeMs(0)
@@ -69,19 +72,19 @@ public class LambdaHandler implements RequestHandler<Map<String, Object>, Helpde
         final String q = (qRaw != null) ? qRaw.trim() : null;
 
         LOGGER.log(Level.INFO, () -> String.format(
-                "handleRequest start reqId=%s keys=%s question.len=%d question=\"%s\"",
+                LOG_REQUEST_START + " keys=%s",
                 reqId,
-                (event != null ? event.keySet() : java.util.Collections.emptySet()),
                 (q != null ? q.length() : 0),
-                q
+                q,
+                (event != null ? event.keySet() : java.util.Collections.emptySet())
         ));
 
         if (q == null || q.isBlank()) {
-            LOGGER.log(Level.WARNING, () -> String.format("reqId=%s missing question", reqId));
+            LOGGER.log(Level.WARNING, () -> String.format(LOG_MISSING_QUESTION, reqId));
             return HelpdeskResponse.builder()
                     .answer(MSG_MISSING_QUESTION)
-                    .source("system")
-                    .action("none")
+                    .source(SOURCE_SYSTEM)
+                    .action(ACTION_NONE)
                     .escalation(false)
                     .confidence(0.0)
                     .responseTimeMs(0)
@@ -103,7 +106,7 @@ public class LambdaHandler implements RequestHandler<Map<String, Object>, Helpde
             LOGGER.warning("Just after asking");
 
             LOGGER.log(Level.INFO, () -> String.format(
-                    "handleRequest ok reqId=%s ms=%d esc=%s conf=%.3f source=%s",
+                    LOG_REQUEST_SUCCESS,
                     reqId,
                     response.getResponseTimeMs(),
                     response.isEscalation(),
@@ -113,11 +116,11 @@ public class LambdaHandler implements RequestHandler<Map<String, Object>, Helpde
             return response;
 
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, String.format("Error processing request reqId=%s", reqId), e);
+            LOGGER.log(Level.SEVERE, String.format(LOG_REQUEST_ERROR, reqId), e);
             return HelpdeskResponse.builder()
-                    .answer("Internal error")
-                    .source("system")
-                    .action("none")
+                    .answer(MSG_INTERNAL_ERROR)
+                    .source(SOURCE_SYSTEM)
+                    .action(ACTION_NONE)
                     .escalation(true) // Conservative: escalate on errors
                     .confidence(0.0)
                     .responseTimeMs(0)

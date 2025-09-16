@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="cloud.contoterzi.helpdesk.core.engine.HelpdeskEngineSystemTest" time="0.602" tests="6" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="cloud.contoterzi.helpdesk.core.engine.HelpdeskEngineSystemTest" time="0.189" tests="6" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="21"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -13,7 +13,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="IT"/>
     <property name="sun.boot.library.path" value="/Library/Java/JavaVirtualMachines/jdk-21.jdk/Contents/Home/lib"/>
-    <property name="sun.java.command" value="/Users/paoloproni/Documents/UniBZ/Tesi/JavaLambda/helpdesk-core/target/surefire/surefirebooter-20250823211536205_3.jar /Users/paoloproni/Documents/UniBZ/Tesi/JavaLambda/helpdesk-core/target/surefire 2025-08-23T21-15-36_167-jvmRun1 surefire-20250823211536205_1tmp surefire_0-20250823211536205_2tmp"/>
+    <property name="sun.java.command" value="/Users/paoloproni/Documents/UniBZ/Tesi/JavaLambda/helpdesk-core/target/surefire/surefirebooter-20250916022122546_3.jar /Users/paoloproni/Documents/UniBZ/Tesi/JavaLambda/helpdesk-core/target/surefire 2025-09-16T02-21-22_511-jvmRun1 surefire-20250916022122546_1tmp surefire_0-20250916022122546_2tmp"/>
     <property name="http.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="/Users/paoloproni/Documents/UniBZ/Tesi/JavaLambda/helpdesk-core/target/test-classes:/Users/paoloproni/Documents/UniBZ/Tesi/JavaLambda/helpdesk-core/target/classes:/Users/paoloproni/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.17.1/jackson-databind-2.17.1.jar:/Users/paoloproni/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.17.1/jackson-annotations-2.17.1.jar:/Users/paoloproni/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.17.1/jackson-core-2.17.1.jar:/Users/paoloproni/.m2/repository/org/yaml/snakeyaml/2.2/snakeyaml-2.2.jar:/Users/paoloproni/.m2/repository/org/junit/jupiter/junit-jupiter/5.10.2/junit-jupiter-5.10.2.jar:/Users/paoloproni/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.10.2/junit-jupiter-api-5.10.2.jar:/Users/paoloproni/.m2/repository/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar:/Users/paoloproni/.m2/repository/org/junit/platform/junit-platform-commons/1.10.2/junit-platform-commons-1.10.2.jar:/Users/paoloproni/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/Users/paoloproni/.m2/repository/org/junit/jupiter/junit-jupiter-params/5.10.2/junit-jupiter-params-5.10.2.jar:/Users/paoloproni/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.10.2/junit-jupiter-engine-5.10.2.jar:/Users/paoloproni/.m2/repository/org/junit/platform/junit-platform-engine/1.10.2/junit-platform-engine-1.10.2.jar:/Users/paoloproni/.m2/repository/org/mockito/mockito-core/5.10.0/mockito-core-5.10.0.jar:/Users/paoloproni/.m2/repository/net/bytebuddy/byte-buddy/1.14.11/byte-buddy-1.14.11.jar:/Users/paoloproni/.m2/repository/net/bytebuddy/byte-buddy-agent/1.14.11/byte-buddy-agent-1.14.11.jar:/Users/paoloproni/.m2/repository/org/objenesis/objenesis/3.3/objenesis-3.3.jar:/Users/paoloproni/.m2/repository/org/mockito/mockito-junit-jupiter/5.10.0/mockito-junit-jupiter-5.10.0.jar:"/>
@@ -30,7 +30,7 @@
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="apple.awt.application.name" value="ForkedBooter"/>
-    <property name="surefire.real.class.path" value="/Users/paoloproni/Documents/UniBZ/Tesi/JavaLambda/helpdesk-core/target/surefire/surefirebooter-20250823211536205_3.jar"/>
+    <property name="surefire.real.class.path" value="/Users/paoloproni/Documents/UniBZ/Tesi/JavaLambda/helpdesk-core/target/surefire/surefirebooter-20250916022122546_3.jar"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="ftp.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="java.runtime.version" value="21.0.3+7-LTS-152"/>
@@ -58,52 +58,132 @@
     <property name="socksNonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="java.class.version" value="65.0"/>
   </properties>
-  <testcase name="testProcessQuestion_WithKnowledgeBasePath_ReturnsDirectAnswer" classname="cloud.contoterzi.helpdesk.core.engine.HelpdeskEngineSystemTest" time="0.574">
-    <system-err><![CDATA[WARNING: A Java agent has been loaded dynamically (/Users/paoloproni/.m2/repository/net/bytebuddy/byte-buddy-agent/1.14.11/byte-buddy-agent-1.14.11.jar)
-WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
-WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
-WARNING: Dynamic loading of agents will be disallowed by default in a future release
-ago 23, 2025 9:15:37 PM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+  <testcase name="testProcessQuestion_WithKnowledgeBasePath_ReturnsDirectAnswer" classname="cloud.contoterzi.helpdesk.core.engine.HelpdeskEngineSystemTest" time="0.164">
+    <system-err><![CDATA[set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
 INFO: Initializing Helpdesk Engine
-ago 23, 2025 9:15:37 PM cloud.contoterzi.helpdesk.core.config.AppState init
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+INFO: About to initialize AppState
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.config.AppState init
 INFO: Initializing AppState
-ago 23, 2025 9:15:37 PM cloud.contoterzi.helpdesk.core.config.AppState init
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.config.AppState getConfigInputStream
+INFO: DEBUG: Attempting to load config from: /Users/paoloproni/Documents/UniBZ/Tesi/JavaLambda/helpdesk-core/src/test/resources/test-config.yaml
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.config.AppState getConfigInputStream
+INFO: AppState loading the configuration from a file
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.config.AppState getConfigInputStream
+INFO: DEBUG: File path: /Users/paoloproni/Documents/UniBZ/Tesi/JavaLambda/helpdesk-core/src/test/resources/test-config.yaml
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.config.AppState loadConfigFromEnv
+INFO: DEBUG: YAML loaded successfully. Raw data: {llm={type=claude, region=us-east-1, modelId=anthropic.claude-3-sonnet-20240229-v1:0, llmVersion=bedrock-2023-05-31, temperature=0.4, maxTokens=1024, prompts={preamble=You are a test help desk assistant for an agricultural subcontractor management software.  Answer clearly and helpfully only if the question is relevant to the software.  If it is not, state that you cannot answer.  If the user needs human intervention, include EXACTLY the phrase 'contact support' once in the answer.  If no human is required, DO NOT include that phrase., template=%s%n%nTest Examples:%n%s%n%nUser question: %s%nAnswer:, contactSupportPhrase=contact support}}, storage={type=s3, region=eu-north-1, bucket=test-bucket, prefix=, filename=test-knowledge.json}, similarity={type=cosine, fewShot=10000, threshold=0.8}}
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.config.AppState loadConfigFromEnv
+INFO: DEBUG: Storage section: {type=s3, region=eu-north-1, bucket=test-bucket, prefix=, filename=test-knowledge.json}
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.config.AppState buildStorageUri
+INFO: DEBUG: Storage type = s3
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.config.AppState init
 INFO: AppState initialized
-ago 23, 2025 9:15:37 PM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
-INFO: Helpdesk Engine initialized
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+INFO: AppState initialized successfully
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+INFO: Knowledge base loaded with 2 entries
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+INFO: Loading LLM client type: claude
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+INFO: LLM client loaded successfully: cloud.contoterzi.helpdesk.core.spi.LlmClient$MockitoMock$bhqfMbsn
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+INFO: LLM client initialized successfully
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+INFO: Similarity Service loaded via SPI successfully
 ]]></system-err>
   </testcase>
   <testcase name="testProcessQuestion_WithEscalationRequired_ReturnsEscalationResponse" classname="cloud.contoterzi.helpdesk.core.engine.HelpdeskEngineSystemTest" time="0.003">
-    <system-err><![CDATA[ago 23, 2025 9:15:37 PM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+    <system-err><![CDATA[set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
 INFO: Initializing Helpdesk Engine
-ago 23, 2025 9:15:37 PM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
-INFO: Helpdesk Engine initialized
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+INFO: About to initialize AppState
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+INFO: AppState initialized successfully
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+INFO: Knowledge base loaded with 2 entries
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+INFO: Loading LLM client type: claude
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+INFO: LLM client loaded successfully: cloud.contoterzi.helpdesk.core.spi.LlmClient$MockitoMock$bhqfMbsn
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+INFO: LLM client initialized successfully
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+INFO: Similarity Service loaded via SPI successfully
 ]]></system-err>
   </testcase>
   <testcase name="testProcessQuestion_WithLlmResponseContainingContactSupport_ReturnsEscalation" classname="cloud.contoterzi.helpdesk.core.engine.HelpdeskEngineSystemTest" time="0.005">
-    <system-err><![CDATA[ago 23, 2025 9:15:37 PM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+    <system-err><![CDATA[set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
 INFO: Initializing Helpdesk Engine
-ago 23, 2025 9:15:37 PM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
-INFO: Helpdesk Engine initialized
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+INFO: About to initialize AppState
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+INFO: AppState initialized successfully
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+INFO: Knowledge base loaded with 2 entries
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+INFO: Loading LLM client type: claude
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+INFO: LLM client loaded successfully: cloud.contoterzi.helpdesk.core.spi.LlmClient$MockitoMock$bhqfMbsn
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+INFO: LLM client initialized successfully
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+INFO: Similarity Service loaded via SPI successfully
 ]]></system-err>
   </testcase>
-  <testcase name="testProcessQuestion_WithLlmException_ReturnsFallbackWithEscalation" classname="cloud.contoterzi.helpdesk.core.engine.HelpdeskEngineSystemTest" time="0.004"/>
-  <testcase name="testProcessQuestion_ToggleBetweenLlmAndKnowledgeBase" classname="cloud.contoterzi.helpdesk.core.engine.HelpdeskEngineSystemTest" time="0.003">
-    <system-err><![CDATA[ago 23, 2025 9:15:37 PM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+  <testcase name="testProcessQuestion_WithLlmException_ReturnsFallbackWithEscalation" classname="cloud.contoterzi.helpdesk.core.engine.HelpdeskEngineSystemTest" time="0.003"/>
+  <testcase name="testProcessQuestion_ToggleBetweenLlmAndKnowledgeBase" classname="cloud.contoterzi.helpdesk.core.engine.HelpdeskEngineSystemTest" time="0.005">
+    <system-err><![CDATA[set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
 INFO: Initializing Helpdesk Engine
-ago 23, 2025 9:15:37 PM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
-INFO: Helpdesk Engine initialized
-ago 23, 2025 9:15:37 PM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+INFO: About to initialize AppState
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+INFO: AppState initialized successfully
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+INFO: Knowledge base loaded with 2 entries
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+INFO: Loading LLM client type: claude
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+INFO: LLM client loaded successfully: cloud.contoterzi.helpdesk.core.spi.LlmClient$MockitoMock$bhqfMbsn
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+INFO: LLM client initialized successfully
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+INFO: Similarity Service loaded via SPI successfully
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
 INFO: Initializing Helpdesk Engine
-ago 23, 2025 9:15:37 PM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
-INFO: Helpdesk Engine initialized
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+INFO: About to initialize AppState
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+INFO: AppState initialized successfully
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+INFO: Knowledge base loaded with 2 entries
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+INFO: Loading LLM client type: claude
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+INFO: LLM client loaded successfully: cloud.contoterzi.helpdesk.core.spi.LlmClient$MockitoMock$bhqfMbsn
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+INFO: LLM client initialized successfully
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+INFO: Similarity Service loaded via SPI successfully
 ]]></system-err>
   </testcase>
-  <testcase name="testProcessQuestion_WithAlwaysCallLlmTrue_InvokesLlmService" classname="cloud.contoterzi.helpdesk.core.engine.HelpdeskEngineSystemTest" time="0.003">
-    <system-err><![CDATA[ago 23, 2025 9:15:37 PM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+  <testcase name="testProcessQuestion_WithAlwaysCallLlmTrue_InvokesLlmService" classname="cloud.contoterzi.helpdesk.core.engine.HelpdeskEngineSystemTest" time="0.004">
+    <system-err><![CDATA[set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
 INFO: Initializing Helpdesk Engine
-ago 23, 2025 9:15:37 PM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
-INFO: Helpdesk Engine initialized
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+INFO: About to initialize AppState
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+INFO: AppState initialized successfully
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+INFO: Knowledge base loaded with 2 entries
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+INFO: Loading LLM client type: claude
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+INFO: LLM client loaded successfully: cloud.contoterzi.helpdesk.core.spi.LlmClient$MockitoMock$bhqfMbsn
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+INFO: LLM client initialized successfully
+set 16, 2025 2:21:23 AM cloud.contoterzi.helpdesk.core.engine.HelpdeskEngine init
+INFO: Similarity Service loaded via SPI successfully
 ]]></system-err>
   </testcase>
 </testsuite>

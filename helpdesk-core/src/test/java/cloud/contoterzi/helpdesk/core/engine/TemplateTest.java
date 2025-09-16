@@ -1,11 +1,10 @@
 package cloud.contoterzi.helpdesk.core.engine;
 
+import cloud.contoterzi.helpdesk.core.config.YamlConfig;
 import cloud.contoterzi.helpdesk.core.model.IKnowledge;
-import cloud.contoterzi.helpdesk.core.model.impl.AppConfig;
 import cloud.contoterzi.helpdesk.core.model.impl.KnowledgeEntry;
-import cloud.contoterzi.helpdesk.core.model.impl.LlmConfig;
-import cloud.contoterzi.helpdesk.core.model.impl.PromptsConfig;
 import org.junit.jupiter.api.Test;
+import org.yaml.snakeyaml.Yaml;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -21,18 +20,17 @@ class TemplateTest {
     void testBuildPromptWithTemplate() throws Exception {
         // Arrange
         HelpdeskEngine engine = new HelpdeskEngine();
-        
-        // Create test configuration
-        AppConfig config = new AppConfig();
-        LlmConfig llmConfig = new LlmConfig();
-        PromptsConfig promptsConfig = new PromptsConfig();
-        
-        promptsConfig.setPreamble("You are a helpful assistant for agricultural software.");
-        promptsConfig.setTemplate("%s%n%nExamples:%n%s%n%nUser question: %s%nAnswer:");
-        promptsConfig.setContactSupportPhrase("contact support");
-        
-        llmConfig.setPrompts(promptsConfig);
-        config.setLlm(llmConfig);
+
+        // Create test configuration using YAML format
+        String yamlContent = """
+            llm:
+              prompts:
+                preamble: "You are a helpful assistant for agricultural software."
+                template: "%s%n%nExamples:%n%s%n%nUser question: %s%nAnswer:"
+                contactSupportPhrase: "contact support"
+            """;
+
+        YamlConfig config = new YamlConfig(new java.io.ByteArrayInputStream(yamlContent.getBytes()));
         
         // Create test knowledge base
         KnowledgeEntry entry1 = new KnowledgeEntry();
@@ -76,18 +74,16 @@ class TemplateTest {
     void testBuildPromptWithoutTemplate() throws Exception {
         // Arrange
         HelpdeskEngine engine = new HelpdeskEngine();
-        
+
         // Create test configuration without template
-        AppConfig config = new AppConfig();
-        LlmConfig llmConfig = new LlmConfig();
-        PromptsConfig promptsConfig = new PromptsConfig();
-        
-        promptsConfig.setPreamble("You are a helpful assistant for agricultural software.");
-        promptsConfig.setTemplate(null); // No template
-        promptsConfig.setContactSupportPhrase("contact support");
-        
-        llmConfig.setPrompts(promptsConfig);
-        config.setLlm(llmConfig);
+        String yamlContent = """
+            llm:
+              prompts:
+                preamble: "You are a helpful assistant for agricultural software."
+                contactSupportPhrase: "contact support"
+            """;
+
+        YamlConfig config = new YamlConfig(new java.io.ByteArrayInputStream(yamlContent.getBytes()));
         
         // Use reflection to access private methods and fields
         Method buildPromptMethod = HelpdeskEngine.class.getDeclaredMethod("buildPromptWithTemplate", String.class);

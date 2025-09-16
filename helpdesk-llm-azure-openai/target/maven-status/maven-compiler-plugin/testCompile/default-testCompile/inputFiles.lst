@@ -1,1 +1,4 @@
-/Users/paoloproni/Documents/UniBZ/Tesi/JavaLambda/helpdesk-llm-azure-openai/src/test/java/cloud/contoterzi/AppTest.java
+/Users/paoloproni/Documents/UniBZ/Tesi/JavaLambda/helpdesk-llm-azure-openai/src/test/java/cloud/contoterzi/azure/openai/MockYamlConfig.java
+/Users/paoloproni/Documents/UniBZ/Tesi/JavaLambda/helpdesk-llm-azure-openai/src/test/java/cloud/contoterzi/azure/openai/SpiServiceTest.java
+/Users/paoloproni/Documents/UniBZ/Tesi/JavaLambda/helpdesk-llm-azure-openai/src/test/java/cloud/contoterzi/azure/openai/OpenAIClientTest.java
+/Users/paoloproni/Documents/UniBZ/Tesi/JavaLambda/helpdesk-llm-azure-openai/src/test/java/cloud/contoterzi/azure/openai/OpenAIClientIntegrationTest.java

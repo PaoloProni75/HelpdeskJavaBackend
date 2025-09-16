@@ -2,7 +2,7 @@ package cloud.contoterzi.helpdesk.core.spi;
 
 import cloud.contoterzi.helpdesk.core.model.IKnowledge;
 import cloud.contoterzi.helpdesk.core.model.KnowledgeBestMatch;
-import cloud.contoterzi.helpdesk.core.model.impl.AppConfig;
+import cloud.contoterzi.helpdesk.core.config.YamlConfig;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ public interface SimilarityService {
      * Initializes the similarity service with the given application configuration.
      * @param appConfig the application configuration to use for initialization
      */
-    void init(AppConfig appConfig);
+    void init(YamlConfig appConfig);
 
     /**
      * Finds the best matching knowledge base item for the given question.

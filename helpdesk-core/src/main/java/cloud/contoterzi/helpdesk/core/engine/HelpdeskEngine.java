@@ -1,16 +1,17 @@
 package cloud.contoterzi.helpdesk.core.engine;
 
 import cloud.contoterzi.helpdesk.core.config.AppState;
+import cloud.contoterzi.helpdesk.core.config.YamlConfig;
 import cloud.contoterzi.helpdesk.core.llm.LlmException;
 import cloud.contoterzi.helpdesk.core.model.*;
 import cloud.contoterzi.helpdesk.core.spi.LlmClient;
 import cloud.contoterzi.helpdesk.core.spi.SimilarityService;
 import cloud.contoterzi.helpdesk.core.util.SpiLoader;
+import cloud.contoterzi.helpdesk.core.handler.SuperHandler;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicBoolean;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,9 +42,7 @@ public class HelpdeskEngine {
     private LlmClient llm;
     private SimilarityService similarityService;
     private double threshold;
-    private IAppConfig config; // Store config to access prompts
-
-    private final AtomicBoolean initialized = new AtomicBoolean(false);
+    private YamlConfig config; // Store config to access prompts
 
     public HelpdeskEngine() {}
 
@@ -53,40 +52,40 @@ public class HelpdeskEngine {
      * instead of the constructor.
      */
     public void init() throws IOException {
-        if (initialized.compareAndSet(false, true)) {
-            // This block is executed the first time only when the method is called.
-            // Next calls never enter here.
-            LOGGER.info("Initializing Helpdesk Engine");
-            AppState state = AppState.INSTANCE;
-            state.init();
-
-            IAppConfig cfg = state.getConfiguration();
-            assert cfg != null;
-            this.config = cfg; // Store config
-            this.kb = state.getKnowledgeBase();
-            assert kb != null;
-
-            assert cfg.getLlm() != null;
-            this.llm = SpiLoader.loadByKey(LlmClient.class, cfg.getLlm().getType());
-            this.llm.init(state.getConfiguration());
-
-            ISimilarityConfig simService = cfg.getSimilarity();
-            assert simService != null;
-
-            this.similarityService = SpiLoader.loadByKey(SimilarityService.class, simService.getType());
-            this.similarityService.init(state.getConfiguration());
-
-            final Double thresholdObj = simService.getThreshold();
-            this.threshold = Objects.requireNonNullElse(thresholdObj, 0.0);
-            
-            // Initialize contactSupportPhrase from config
-            if (cfg.getLlm().getPrompts() != null && cfg.getLlm().getPrompts().getContactSupportPhrase() != null) {
-                this.contactSupportPhrase = cfg.getLlm().getPrompts().getContactSupportPhrase();
-            }
-
-            LOGGER.info("Helpdesk Engine initialized");
+        // This block is executed the first time only when the method is called.
+        // Next calls never enter here.
+        LOGGER.info("Initializing Helpdesk Engine");
+        AppState state = AppState.INSTANCE;
+        LOGGER.info("About to initialize AppState");
+        state.init();
+        LOGGER.info("AppState initialized successfully");
+        YamlConfig cfg = state.getConfiguration();
+        assert cfg != null;
+        this.config = cfg; // Store config
+        this.kb = state.getKnowledgeBase();
+        assert kb != null;
+        LOGGER.info("Knowledge base loaded with " + kb.size() + " entries");
+        String llmType = cfg.getString("llm.type");
+        assert llmType != null;
+        LOGGER.info("Loading LLM client type: " + llmType);
+        this.llm = SpiLoader.loadByKey(LlmClient.class, llmType);
+        if (this.llm == null) {
+            LOGGER.severe("LLM client not found for type: " + llmType);
+            throw new IOException("Cannot load LLM client for type: " + llmType);
         }
-
+        LOGGER.info("LLM client loaded successfully: " + this.llm.getClass().getName());
+        this.llm.init(cfg);
+        LOGGER.info("LLM client initialized successfully");
+        String similarityType = cfg.getString("similarity.type", "cosine");
+        this.similarityService = SpiLoader.loadByKey(SimilarityService.class, similarityType);
+        if (similarityService == null)
+            LOGGER.severe("Similarity Service not LOADED via SPI");
+        else
+            LOGGER.info("Similarity Service loaded via SPI successfully");
+        this.similarityService.init(cfg);
+        this.threshold = cfg.getDouble("similarity.threshold", 0.8);
+        // Initialize contactSupportPhrase from config
+        this.contactSupportPhrase = cfg.getString("llm.prompts.contactSupportPhrase", "contact support");
     }
 
     /**
@@ -100,7 +99,7 @@ public class HelpdeskEngine {
      *         confidence score, escalation status, and suggested actions.
      */
     public HelpdeskResponse processQuestion(final HelpdeskRequest request) throws IOException {
-        if (!initialized.get())
+        if (this.llm == null)
             throw new IllegalStateException("Helpdesk Engine not initialized. Did you call init()?");
 
         final KnowledgeBestMatch bestMatch = this.similarityService.findBestMatch(request.getQuestion(), kb, threshold);
@@ -167,17 +166,9 @@ public class HelpdeskEngine {
      * Template format: preamble + "\n\nExamples:\n" + examples + "\n\nUser question: " + question + "\nAnswer:"
      */
     private String buildPromptWithTemplate(String userQuestion) {
-        ILlmConfig llmConf = config.getLlm();
-        if (llmConf.getPrompts() == null) {
-            // Fallback to simple question if no prompts config
-            return userQuestion;
-        }
+        String preamble = config.getString("llm.prompts.preamble");
+        String template = config.getString("llm.prompts.template");
 
-        IPromptConfig promptConf = llmConf.getPrompts();
-
-        String preamble = promptConf.getPreamble();
-        String template = promptConf.getTemplate();
-        
         if (template == null || template.isEmpty()) {
             // Fallback to simple question if no template
             return userQuestion;

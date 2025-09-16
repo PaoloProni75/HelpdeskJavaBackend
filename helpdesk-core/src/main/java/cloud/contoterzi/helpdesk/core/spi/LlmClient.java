@@ -3,7 +3,7 @@ package cloud.contoterzi.helpdesk.core.spi;
 import cloud.contoterzi.helpdesk.core.llm.LlmException;
 import cloud.contoterzi.helpdesk.core.model.LlmRequest;
 import cloud.contoterzi.helpdesk.core.model.LlmResponse;
-import cloud.contoterzi.helpdesk.core.model.impl.AppConfig;
+import cloud.contoterzi.helpdesk.core.config.YamlConfig;
 
 /**
  * Interface for LLM client providers.
@@ -21,7 +21,7 @@ public interface LlmClient {
      * Initialize with the config subtree; called once.
      * @param config The configuration subtree for this provider.
      */
-    void init(AppConfig config);
+    void init(YamlConfig config);
 
     /**
      * Generate answer given prompt and optional system/instructions.

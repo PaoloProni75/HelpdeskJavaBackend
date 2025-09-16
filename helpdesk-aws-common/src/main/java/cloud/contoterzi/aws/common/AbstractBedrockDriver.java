@@ -78,7 +78,7 @@ public abstract class AbstractBedrockDriver extends AbstractLlmClient  {
             }
             int sc = ex.statusCode();
             if (sc == HTTP_UNAUTHORIZED || sc == HTTP_FORBIDDEN) {
-                LOGGER.warning(() -> AUTH_ERROR_MESSAGE_FORMAT.formatted(sc, message(ex)));
+                LOGGER.fine(() -> AUTH_ERROR_MESSAGE_FORMAT.formatted(sc, message(ex)));
                 throw new AuthException(ex);
             }
 

@@ -1,1 +1,4 @@
-cloud/contoterzi/AppTest.class
+cloud/contoterzi/azure/openai/OpenAIClientIntegrationTest.class
+cloud/contoterzi/azure/openai/OpenAIClientTest.class
+cloud/contoterzi/azure/openai/SpiServiceTest.class
+cloud/contoterzi/azure/openai/MockYamlConfig.class
