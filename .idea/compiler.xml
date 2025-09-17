@@ -6,11 +6,37 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="helpdesk-llm-openai" />
-        <module name="helpdesk-storage-blob" />
         <module name="helpdesk-core" />
+        <module name="helpdesk-storage-s3" />
         <module name="helpdesk-similarity" />
-        <module name="helpdesk-azure-common" />
+        <module name="helpdesk-llm-ibm-watsonx" />
+      </profile>
+      <profile name="Annotation profile for helpdesk-backend (parent)" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/io/micronaut/micronaut-inject-java/4.9.3/micronaut-inject-java-4.9.3.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/2.0.17/slf4j-api-2.0.17.jar" />
+          <entry name="$MAVEN_REPOSITORY$/io/micronaut/micronaut-core-processor/4.9.3/micronaut-core-processor-4.9.3.jar" />
+          <entry name="$MAVEN_REPOSITORY$/io/micronaut/micronaut-inject/4.9.3/micronaut-inject-4.9.3.jar" />
+          <entry name="$MAVEN_REPOSITORY$/jakarta/inject/jakarta.inject-api/2.0.1/jakarta.inject-api-2.0.1.jar" />
+          <entry name="$MAVEN_REPOSITORY$/jakarta/annotation/jakarta.annotation-api/2.1.1/jakarta.annotation-api-2.1.1.jar" />
+          <entry name="$MAVEN_REPOSITORY$/io/micronaut/micronaut-core/4.9.3/micronaut-core-4.9.3.jar" />
+          <entry name="$MAVEN_REPOSITORY$/io/micronaut/micronaut-aop/4.9.3/micronaut-aop-4.9.3.jar" />
+          <entry name="$MAVEN_REPOSITORY$/com/github/javaparser/javaparser-symbol-solver-core/3.26.4/javaparser-symbol-solver-core-3.26.4.jar" />
+          <entry name="$MAVEN_REPOSITORY$/com/github/javaparser/javaparser-core/3.26.4/javaparser-core-3.26.4.jar" />
+          <entry name="$MAVEN_REPOSITORY$/io/micronaut/sourcegen/micronaut-sourcegen-bytecode-writer/1.8.2/micronaut-sourcegen-bytecode-writer-1.8.2.jar" />
+          <entry name="$MAVEN_REPOSITORY$/io/micronaut/sourcegen/micronaut-sourcegen-model/1.8.2/micronaut-sourcegen-model-1.8.2.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/ow2/asm/asm/9.8/asm-9.8.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/ow2/asm/asm-commons/9.8/asm-commons-9.8.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/ow2/asm/asm-tree/9.8/asm-tree-9.8.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/ow2/asm/asm-util/9.8/asm-util-9.8.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/ow2/asm/asm-analysis/9.8/asm-analysis-9.8.jar" />
+          <entry name="$MAVEN_REPOSITORY$/io/micronaut/micronaut-core-reactive/4.9.3/micronaut-core-reactive-4.9.3.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/reactivestreams/reactive-streams/1.0.4/reactive-streams-1.0.4.jar" />
+        </processorPath>
+        <module name="helpdesk-ibm-common" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -18,14 +44,16 @@
       <module name="helpdesk-app-common" target="17" />
       <module name="helpdesk-app-lambda" target="17" />
       <module name="helpdesk-aws-common" target="17" />
+      <module name="helpdesk-azure-common" target="17" />
       <module name="helpdesk-lambda" target="17" />
       <module name="helpdesk-llm-aws-claude" target="17" />
       <module name="helpdesk-llm-aws-nova" target="17" />
-      <module name="helpdesk-llm-ibm-watsonx" target="17" />
+      <module name="helpdesk-llm-azure-openai" target="17" />
       <module name="helpdesk-llm-ollama" target="17" />
       <module name="helpdesk-llm-ollama-gptoss" target="17" />
+      <module name="helpdesk-llm-openai" target="17" />
+      <module name="helpdesk-storage-blob" target="17" />
       <module name="helpdesk-storage-fs" target="17" />
-      <module name="helpdesk-storage-s3" target="17" />
     </bytecodeTargetLevel>
   </component>
 </project>

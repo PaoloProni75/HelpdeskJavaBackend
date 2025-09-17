@@ -1,6 +1,0 @@
-cloud/contoterzi/helpdesk/core/engine/EnvironmentVariableTest.class
-cloud/contoterzi/helpdesk/core/engine/HelpdeskEngineTest.class
-cloud/contoterzi/helpdesk/core/engine/HelpdeskEngineSystemTest.class
-cloud/contoterzi/helpdesk/core/llm/AbstractOpenAIDriverTest$TestableAbstractOpenAIDriver.class
-cloud/contoterzi/helpdesk/core/engine/TemplateTest.class
-cloud/contoterzi/helpdesk/core/llm/AbstractOpenAIDriverTest.class

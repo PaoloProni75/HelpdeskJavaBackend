@@ -1,7 +1,6 @@
 package cloud.contoterzi.storage.s3;
 
-import cloud.contoterzi.helpdesk.core.model.IAppConfig;
-import cloud.contoterzi.helpdesk.core.model.impl.AppConfig;
+import cloud.contoterzi.helpdesk.core.config.YamlConfig;
 import org.junit.jupiter.api.Test;
 import software.amazon.awssdk.regions.Region;
 
@@ -33,10 +32,8 @@ class S3StorageAdapterTest {
     @Test
     void testInit() {
         S3StorageAdapter adapter = new S3StorageAdapter(Region.US_EAST_1, "test-bucket", "test-key");
-        IAppConfig config = new AppConfig();
-        
+
         // init should not throw and should do nothing (adapter is already configured)
-        assertDoesNotThrow(() -> adapter.init(config));
         assertDoesNotThrow(() -> adapter.init(null));
     }
 

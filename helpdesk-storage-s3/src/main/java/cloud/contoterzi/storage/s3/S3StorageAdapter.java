@@ -1,6 +1,6 @@
  package cloud.contoterzi.storage.s3;
 
-import cloud.contoterzi.helpdesk.core.model.IAppConfig;
+import cloud.contoterzi.helpdesk.core.config.YamlConfig;
 import cloud.contoterzi.helpdesk.core.model.IKnowledge;
 import cloud.contoterzi.helpdesk.core.model.impl.KnowledgeEntry;
 import cloud.contoterzi.helpdesk.core.storage.StorageAdapter;
@@ -24,15 +24,20 @@ import java.util.Objects;
 public class S3StorageAdapter implements StorageAdapter {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
+    public static final String FAILED_TO_LOAD_KB_FROM_S_3_S_S = "Failed to load KB from s3://%s/%s";
+    public static final String S_3 = "s3";
+    public static final String REGION_MUST_NOT_BE_NULL = "region must not be null";
+    public static final String BUCKET_MUST_NOT_BE_NULL = "bucket must not be null";
+    public static final String KEY_MUST_NOT_BE_NULL = "key must not be null";
 
     private final S3Client s3;
     private final String bucket;
     private final String key;
 
     public S3StorageAdapter(Region region, String bucket, String key) {
-        Objects.requireNonNull(region, "region must not be null");
-        Objects.requireNonNull(bucket, "bucket must not be null");
-        Objects.requireNonNull(key, "key must not be null");
+        Objects.requireNonNull(region, REGION_MUST_NOT_BE_NULL);
+        Objects.requireNonNull(bucket, BUCKET_MUST_NOT_BE_NULL);
+        Objects.requireNonNull(key, KEY_MUST_NOT_BE_NULL);
 
         this.s3 = S3Client.builder()
                 .region(region)
@@ -47,11 +52,11 @@ public class S3StorageAdapter implements StorageAdapter {
 
     @Override
     public String type() {
-        return "s3";
+        return S_3;
     }
 
     @Override
-    public void init(IAppConfig appConfig) {
+    public void init(YamlConfig appConfig) {
         // The S3StorageAdapter is already initialized with region, bucket, and key in the constructor
         // This method is called by the framework but no additional initialization is needed
         // since the S3Client is already configured
@@ -75,7 +80,7 @@ public class S3StorageAdapter implements StorageAdapter {
                     .map(IKnowledge.class::cast)
                     .toList();
         } catch (Exception e) {
-            throw new IOException("Failed to load KB from s3://" + bucket + "/" + key, e);
+            throw new IOException(FAILED_TO_LOAD_KB_FROM_S_3_S_S.formatted(bucket, key), e);
         }
     }
 }

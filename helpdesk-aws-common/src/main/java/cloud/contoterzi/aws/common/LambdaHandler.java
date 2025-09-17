@@ -23,7 +23,7 @@ public class LambdaHandler implements RequestHandler<Map<String, Object>, Helpde
     private static HelpdeskEngine engine;
     private static final ReentrantLock ENGINE_LOCK = new ReentrantLock();
 
-
+    // TODO: take away this static part as it is in the SuperHandler class
     static {
         // initialization during class loading
         try {

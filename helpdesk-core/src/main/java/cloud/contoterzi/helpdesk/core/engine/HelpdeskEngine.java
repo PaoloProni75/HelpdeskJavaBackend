@@ -7,13 +7,11 @@ import cloud.contoterzi.helpdesk.core.model.*;
 import cloud.contoterzi.helpdesk.core.spi.LlmClient;
 import cloud.contoterzi.helpdesk.core.spi.SimilarityService;
 import cloud.contoterzi.helpdesk.core.util.SpiLoader;
-import cloud.contoterzi.helpdesk.core.handler.SuperHandler;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.List;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * The HelpdeskEngine class is responsible for processing user queries in a helpdesk system.
@@ -22,7 +20,7 @@ import java.util.logging.Logger;
  * The class can determine whether a query requires human intervention or can be handled by the system.
  */
 public class HelpdeskEngine {
-    private static final Logger LOGGER = Logger.getLogger(HelpdeskEngine.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(HelpdeskEngine.class.getName());
 
     private static final String ACTION_NOTIFY_HUMAN = "notify_human";
     private static final String ACTION_NONE = "none";
@@ -31,6 +29,7 @@ public class HelpdeskEngine {
 
     public static final String FALLBACK =
             "Sorry, I don't know the answer to that question.";
+    public static final String LLM_ERROR = "LLM error";
 
     /**
      * Sentinel sentence to detect the need of escalation to a human support in the LLM response.
@@ -70,7 +69,7 @@ public class HelpdeskEngine {
         LOGGER.info("Loading LLM client type: " + llmType);
         this.llm = SpiLoader.loadByKey(LlmClient.class, llmType);
         if (this.llm == null) {
-            LOGGER.severe("LLM client not found for type: " + llmType);
+            LOGGER.error("LLM client not found for type: " + llmType);
             throw new IOException("Cannot load LLM client for type: " + llmType);
         }
         LOGGER.info("LLM client loaded successfully: " + this.llm.getClass().getName());
@@ -79,7 +78,7 @@ public class HelpdeskEngine {
         String similarityType = cfg.getString("similarity.type", "cosine");
         this.similarityService = SpiLoader.loadByKey(SimilarityService.class, similarityType);
         if (similarityService == null)
-            LOGGER.severe("Similarity Service not LOADED via SPI");
+            LOGGER.error("Similarity Service not LOADED via SPI");
         else
             LOGGER.info("Similarity Service loaded via SPI successfully");
         this.similarityService.init(cfg);
@@ -144,7 +143,7 @@ public class HelpdeskEngine {
                     .escalation(escalation)
                     .source(LLM)
                     .responseTimeMs(0L);
-            LOGGER.log(Level.WARNING, "LLM error", ex);
+            LOGGER.warn(LLM_ERROR, ex);
         }
     }
 
@@ -190,8 +189,8 @@ public class HelpdeskEngine {
                 preamble != null ? preamble : "",
                 examples.toString().trim(),
                 userQuestion);
-        } catch (Exception e) {
-            LOGGER.warning("Error formatting template, falling back to simple question: " + e.getMessage());
+        } catch (Exception ex) {
+            LOGGER.warn("Error formatting template, falling back to simple question", ex);
             return userQuestion;
         }
     }

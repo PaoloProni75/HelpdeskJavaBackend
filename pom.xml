@@ -157,6 +157,14 @@
                 <module>helpdesk-llm-ollama</module>
             </modules>
         </profile>
+        <profile>
+            <id>ibm</id>
+            <modules>
+                <module>helpdesk-ibm-common</module>
+                <module>helpdesk-llm-ibm-watson</module>
+                <module>helpdesk-storage-s3</module> <!-- IBM Cos is compatible with S3 -->
+            </modules>
+        </profile>
         <!-- Complete Build: all the modules -->
         <profile>
             <id>all</id>
@@ -168,6 +176,7 @@
                 <module>helpdesk-llm-aws-claude</module>
                 <module>helpdesk-llm-aws-nova</module>
                 <module>helpdesk-llm-azure-openai</module>
+                <module>helpdesk-ibm-common</module>
                 <module>helpdesk-llm-ibm-watson</module>
                 <module>helpdesk-llm-ollama</module>
             </modules>
