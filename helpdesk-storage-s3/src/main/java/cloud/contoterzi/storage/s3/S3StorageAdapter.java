@@ -1,86 +1,107 @@
- package cloud.contoterzi.storage.s3;
+package cloud.contoterzi.storage.s3;
 
 import cloud.contoterzi.helpdesk.core.config.YamlConfig;
 import cloud.contoterzi.helpdesk.core.model.IKnowledge;
-import cloud.contoterzi.helpdesk.core.model.impl.KnowledgeEntry;
-import cloud.contoterzi.helpdesk.core.storage.StorageAdapter;
+import cloud.contoterzi.helpdesk.core.spi.StorageAdapter;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import software.amazon.awssdk.core.ResponseBytes;
+import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
+import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 
-import java.io.IOException;
-import java.time.Duration;
 import java.util.List;
-import java.util.Objects;
+import java.util.logging.Logger;
 
 /**
- * Loads a JSON knowledge base from S3 (AWS SDK v2).
- * Expects the S3 object to be a JSON array of KnowledgeEntry.
+ * Simplified S3 Storage Adapter - no URI parsing, direct configuration!
+ * This replaces the complex StorageProvider -> URI -> StorageAdapterProvider -> StorageAdapter chain
+ * with a simple direct implementation.
  */
 public class S3StorageAdapter implements StorageAdapter {
+    private static final Logger LOGGER = Logger.getLogger(S3StorageAdapter.class.getName());
 
-    private static final ObjectMapper MAPPER = new ObjectMapper();
-    public static final String FAILED_TO_LOAD_KB_FROM_S_3_S_S = "Failed to load KB from s3://%s/%s";
-    public static final String S_3 = "s3";
-    public static final String REGION_MUST_NOT_BE_NULL = "region must not be null";
-    public static final String BUCKET_MUST_NOT_BE_NULL = "bucket must not be null";
-    public static final String KEY_MUST_NOT_BE_NULL = "key must not be null";
+    private S3Client s3Client;
+    private String bucket;
+    private String key;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
-    private final S3Client s3;
-    private final String bucket;
-    private final String key;
-
-    public S3StorageAdapter(Region region, String bucket, String key) {
-        Objects.requireNonNull(region, REGION_MUST_NOT_BE_NULL);
-        Objects.requireNonNull(bucket, BUCKET_MUST_NOT_BE_NULL);
-        Objects.requireNonNull(key, KEY_MUST_NOT_BE_NULL);
-
-        this.s3 = S3Client.builder()
-                .region(region)
-                .overrideConfiguration(b -> b
-                    .apiCallTimeout(Duration.ofSeconds(60))
-                    .apiCallAttemptTimeout(Duration.ofSeconds(30))
-                )
-                .build();
-        this.bucket = bucket;
-        this.key    = key ;
+    @Override
+    public String getType() {
+        return "s3";
     }
 
     @Override
-    public String type() {
-        return S_3;
+    public boolean supports(String type) {
+        return "s3".equals(type);
     }
 
     @Override
-    public void init(YamlConfig appConfig) {
-        // The S3StorageAdapter is already initialized with region, bucket, and key in the constructor
-        // This method is called by the framework but no additional initialization is needed
-        // since the S3Client is already configured
-    }
+    public void init(YamlConfig config) throws IllegalArgumentException {
+        LOGGER.info("Initializing S3 Storage Adapter");
 
-    @Override
-    public List<IKnowledge> loadKnowledgeBase() throws IOException {
+        // Direct configuration extraction - no URI parsing!
+        this.bucket = config.getString("storage.bucket");
+        String filename = config.getString("storage.filename");
+        String prefix = config.getString("storage.prefix", "");
+        String region = config.getString("storage.region", "us-east-1");
+
+        // Validate required configuration
+        if (bucket == null || bucket.trim().isEmpty()) {
+            throw new IllegalArgumentException("S3 bucket cannot be null or empty");
+        }
+        if (filename == null || filename.trim().isEmpty()) {
+            throw new IllegalArgumentException("S3 filename cannot be null or empty");
+        }
+
+        // Build S3 key directly
+        if (prefix != null && !prefix.trim().isEmpty()) {
+            this.key = prefix.trim() + "/" + filename.trim();
+        } else {
+            this.key = filename.trim();
+        }
+
+        // Remove leading slash if present
+        if (key.startsWith("/")) {
+            key = key.substring(1);
+        }
+
+        // Initialize S3 client directly
         try {
-            GetObjectRequest req = GetObjectRequest.builder()
+            this.s3Client = S3Client.builder()
+                    .region(Region.of(region))
+                    .credentialsProvider(DefaultCredentialsProvider.create())
+                    .build();
+
+            LOGGER.info("S3 Storage Adapter initialized: bucket=" + bucket + ", key=" + key + ", region=" + region);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Failed to initialize S3 client: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public List<IKnowledge> loadKnowledgeBase() throws RuntimeException {
+        LOGGER.info("Loading knowledge base from S3: s3://" + bucket + "/" + key);
+
+        try {
+            GetObjectRequest getObjectRequest = GetObjectRequest.builder()
                     .bucket(bucket)
                     .key(key)
                     .build();
 
-            ResponseBytes<GetObjectResponse> resp = s3.getObjectAsBytes(req);
+            ResponseInputStream<GetObjectResponse> responseStream = s3Client.getObject(getObjectRequest);
 
-            // JSON array -> List<KnowledgeEntry>
-            byte[] bytes = resp.asByteArray();
+            // Parse JSON directly to knowledge objects
+            List<IKnowledge> knowledge = objectMapper.readValue(responseStream, new TypeReference<List<IKnowledge>>() {});
 
-            return MAPPER.readValue(bytes, new TypeReference<List<KnowledgeEntry>>() {})
-                    .stream()
-                    .map(IKnowledge.class::cast)
-                    .toList();
+            LOGGER.info("Successfully loaded " + knowledge.size() + " knowledge items from S3");
+            return knowledge;
+
         } catch (Exception e) {
-            throw new IOException(FAILED_TO_LOAD_KB_FROM_S_3_S_S.formatted(bucket, key), e);
+            LOGGER.severe("Failed to load knowledge base from S3: " + e.getMessage());
+            throw new RuntimeException("Failed to load knowledge base from S3: s3://" + bucket + "/" + key, e);
         }
     }
 }

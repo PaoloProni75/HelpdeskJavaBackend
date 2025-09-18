@@ -11,7 +11,6 @@ import cloud.contoterzi.helpdesk.core.config.YamlConfig;
  * The implementor represents directly an LLM service to which the system will communicate.
  */
 public interface LlmClient {
-
     /**
      * Short identifier for this provider, e.g. "anthropic", "openai-azure", "nova".
      */

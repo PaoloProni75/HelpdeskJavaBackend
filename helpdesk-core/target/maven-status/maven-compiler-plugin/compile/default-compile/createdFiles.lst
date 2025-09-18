@@ -1,4 +1,3 @@
-cloud/contoterzi/helpdesk/core/storage/spi/StorageAdapterProvider.class
 cloud/contoterzi/helpdesk/core/spi/SimilarityService.class
 cloud/contoterzi/helpdesk/core/llm/AbstractLlmClient.class
 cloud/contoterzi/helpdesk/core/llm/RateLimitException.class
@@ -10,14 +9,12 @@ cloud/contoterzi/helpdesk/core/model/HelpdeskResponse$Builder.class
 cloud/contoterzi/helpdesk/core/handler/HandlerConstants.class
 cloud/contoterzi/helpdesk/core/config/AppState.class
 cloud/contoterzi/helpdesk/core/llm/TimeoutException.class
+cloud/contoterzi/helpdesk/core/spi/StorageProvider.class
 cloud/contoterzi/helpdesk/core/llm/AbstractOpenAIDriver.class
 cloud/contoterzi/helpdesk/core/spi/LlmClient.class
 cloud/contoterzi/helpdesk/core/similarity/SimilarityAlgorithm.class
-cloud/contoterzi/helpdesk/core/storage/StorageAdapterFactory.class
-cloud/contoterzi/helpdesk/core/storage/StorageAdapterLoader.class
 cloud/contoterzi/helpdesk/core/model/LlmRequest.class
 cloud/contoterzi/helpdesk/core/model/HelpdeskResponse.class
-cloud/contoterzi/helpdesk/core/storage/StorageAdapter.class
 cloud/contoterzi/helpdesk/core/engine/HelpdeskEngine.class
 cloud/contoterzi/helpdesk/core/model/KnowledgeBestMatch.class
 cloud/contoterzi/helpdesk/core/handler/SuperHandler.class
@@ -26,6 +23,6 @@ cloud/contoterzi/helpdesk/core/util/SpiLoader.class
 cloud/contoterzi/helpdesk/core/model/impl/KnowledgeEntry.class
 cloud/contoterzi/helpdesk/core/model/LlmBaseFields.class
 cloud/contoterzi/helpdesk/core/llm/LlmException.class
-cloud/contoterzi/helpdesk/core/storage/StorageAdapters.class
 cloud/contoterzi/helpdesk/core/llm/ProviderException.class
 cloud/contoterzi/helpdesk/core/llm/AuthException.class
+cloud/contoterzi/helpdesk/core/spi/StorageAdapter.class

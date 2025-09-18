@@ -18,10 +18,42 @@
     </properties>
 
     <dependencies>
+        <!-- Core API (LlmClient contracts, etc.) -->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>3.8.1</version>
+            <groupId>cloud.contoterzi</groupId>
+            <artifactId>helpdesk-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- Core SDK IBM (per autenticazione IAM) -->
+        <dependency>
+            <groupId>com.ibm.cloud</groupId>
+            <artifactId>sdk-core</artifactId>
+            <version>9.24.3</version>
+        </dependency>
+
+        <!-- Jackson for JSON processing -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+
+        <!-- Test dependencies -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.11.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>5.11.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

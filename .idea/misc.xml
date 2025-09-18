@@ -11,6 +11,7 @@
     <option name="ignoredFiles">
       <set>
         <option value="$PROJECT_DIR$/helpdesk-app-common/pom.xml" />
+        <option value="$PROJECT_DIR$/helpdesk-storage-cus/pom.xml" />
       </set>
     </option>
   </component>

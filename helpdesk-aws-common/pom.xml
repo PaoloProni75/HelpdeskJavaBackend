@@ -51,7 +51,7 @@
         <dependency>
             <groupId>cloud.contoterzi</groupId>
             <artifactId>helpdesk-core</artifactId>
-            <version>${project.version}</version>
+            <version>1.0.0</version>
         </dependency>
         
         <!-- Provider modules will be included during compilation via profile dependencies -->

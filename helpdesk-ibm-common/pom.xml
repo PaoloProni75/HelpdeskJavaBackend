@@ -54,12 +54,18 @@
                                         <exclude>META-INF/*.DSA</exclude>
                                         <exclude>META-INF/*.RSA</exclude>
                                         <exclude>META-INF/MSFTSIG.*</exclude>
+                                        <exclude>META-INF/maven/**</exclude>
+                                        <exclude>META-INF/NOTICE*</exclude>
+                                        <exclude>META-INF/LICENSE*</exclude>
+                                        <exclude>META-INF/license/**</exclude>
+                                        <exclude>META-INF/versions/**</exclude>
+                                        <exclude>module-info.class</exclude>
                                     </excludes>
                                 </filter>
                             </filters>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>cloud.contoterzi.ApplicationHandler</mainClass>
+                                    <mainClass>cloud.contoterzi.ibm.common.ApplicationHandler</mainClass>
                                 </transformer>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
                             </transformers>
@@ -90,6 +96,27 @@
         <dependency>
             <groupId>cloud.contoterzi</groupId>
             <artifactId>helpdesk-core</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <!-- Similarity service -->
+        <dependency>
+            <groupId>cloud.contoterzi</groupId>
+            <artifactId>helpdesk-similarity</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <!-- IBM Storage (COS) -->
+        <dependency>
+            <groupId>cloud.contoterzi</groupId>
+            <artifactId>helpdesk-storage-cos</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <!-- IBM LLM (Watson) -->
+        <dependency>
+            <groupId>cloud.contoterzi</groupId>
+            <artifactId>helpdesk-llm-ibm-watsonx</artifactId>
             <version>1.0.0</version>
         </dependency>
 

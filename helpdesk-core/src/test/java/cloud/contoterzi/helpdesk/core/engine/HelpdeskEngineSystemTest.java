@@ -5,8 +5,7 @@ import cloud.contoterzi.helpdesk.core.model.*;
 import cloud.contoterzi.helpdesk.core.model.impl.KnowledgeEntry;
 import cloud.contoterzi.helpdesk.core.spi.LlmClient;
 import cloud.contoterzi.helpdesk.core.spi.SimilarityService;
-import cloud.contoterzi.helpdesk.core.storage.StorageAdapter;
-import cloud.contoterzi.helpdesk.core.storage.spi.StorageAdapterProvider;
+import cloud.contoterzi.helpdesk.core.spi.StorageAdapter;
 import cloud.contoterzi.helpdesk.core.util.SpiLoader;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +16,6 @@ import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
@@ -44,7 +42,7 @@ class HelpdeskEngineSystemTest {
     private List<IKnowledge> testKnowledgeBase;
 
     @BeforeEach
-    void setUp() throws Exception {
+    void setUp() {
         helpdeskEngine = new HelpdeskEngine();
         
         // Create test knowledge base
@@ -316,14 +314,8 @@ class HelpdeskEngineSystemTest {
                       .thenReturn(mockLlmClient);
         mockedSpiLoader.when(() -> SpiLoader.loadByKey(eq(SimilarityService.class), eq("cosine")))
                       .thenReturn(mockSimilarityService);
-        // Mock StorageAdapterProvider instead of StorageAdapter
-        StorageAdapterProvider mockProvider = mock(StorageAdapterProvider.class);
-        try {
-            when(mockProvider.create(any(), any())).thenReturn(mockStorageAdapter);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        mockedSpiLoader.when(() -> SpiLoader.loadByKey(eq(StorageAdapterProvider.class), eq("s3")))
-                      .thenReturn(mockProvider);
+        // Mock StorageAdapter directly (new simplified architecture)
+        mockedSpiLoader.when(() -> SpiLoader.loadByKey(eq(StorageAdapter.class), eq("s3")))
+                      .thenReturn(mockStorageAdapter);
     }
 }

@@ -1,12 +1,22 @@
 package cloud.contoterzi.helpdesk.core.llm;
 
+import cloud.contoterzi.helpdesk.core.handler.HandlerConstants;
 import cloud.contoterzi.helpdesk.core.model.LlmRequest;
 import cloud.contoterzi.helpdesk.core.model.LlmResponse;
 
+import java.io.InterruptedIOException;
+import java.lang.invoke.MethodHandles;
+import java.net.SocketTimeoutException;
+import java.net.http.HttpTimeoutException;
+import java.nio.channels.InterruptedByTimeoutException;
 import java.time.Duration;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Stream;
+
 import cloud.contoterzi.helpdesk.core.spi.LlmClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Abstract class for LLM clients.
@@ -24,6 +34,20 @@ import cloud.contoterzi.helpdesk.core.spi.LlmClient;
  *  </p>
  */
 public abstract class AbstractLlmClient implements LlmClient {
+    protected static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass().getName());
+
+    private static final int CAUSE_SCAN_MAX_DEPTH = 10;
+
+    private static final String UNKNOWN_ERROR = "Unknown error";
+    private static final String RATE_LIMIT_EXCEPTION_MESSAGE = "Rate limit exceeded (429)";
+    private static final String INVALID_REQUEST_MESSAGE = "Invalid request (400): %s";
+    private static final String SERVICE_TIMEOUT_MESSAGE = "Service timeout (status %d): %s";
+    private static final String AUTH_ERROR_MESSAGE_FORMAT = "Authorization error";
+    private static final String PROVIDER_EXCEPTION_FORMAT = "ProviderException (status %d): %s";
+    private static final String CLIENT_NETWORK_TIMEOUT_FORMAT = "Client/network timeout";
+    private static final String ERROR_TIMEOUT_MESSAGE_FORMAT = "Generic timeout detected via message/causes: %s";
+    private static final String GENERIC_PROVIDER_ERROR_FORMAT = "Generic provider error";
+    private static final long RETRY_AFTER_UNKNOWN_MS = -1L;
 
     /**
      * Main invocation point for the client.
@@ -72,17 +96,6 @@ public abstract class AbstractLlmClient implements LlmClient {
     public LlmResponse ask(String prompt) throws LlmException {
         return ask(new LlmRequest(prompt));
     }
-
-
-
-    /**
-     * Template method: the subclass talks to the LLM provider and returns the textual response.
-     *
-     * @param req The request to the LLM.
-     * @return The textual response from the LLM provider.
-     * @throws LlmException (Auth/RateLimit/Timeout/Provider/InvalidRequest) according to the case
-     */
-    protected abstract LlmResponse invokeProvider(LlmRequest req) throws LlmException;
 
     /**
      * Fallback mapping from Throwable to LlmException.
@@ -190,4 +203,97 @@ public abstract class AbstractLlmClient implements LlmClient {
             throw new TimeoutException("Retry interrupted", ie);
         }
     }
+
+    @SafeVarargs
+    public static boolean hasCause(Throwable t, Class<? extends Throwable>... types) {
+        if (t == null || types == null || types.length == 0) return false;
+
+        Set<Throwable> seen = Collections.newSetFromMap(new IdentityHashMap<>());
+        return Stream.iterate(t, Objects::nonNull, Throwable::getCause)
+                .limit(CAUSE_SCAN_MAX_DEPTH)               // belt
+                .takeWhile(seen::add)                      // suspenders: stop if cycle detected
+                .anyMatch(cur -> Arrays.stream(types).anyMatch(c -> c.isInstance(cur)));
+    }
+
+    protected static String safeLower(String s) {
+        return (s == null ? "" : s).toLowerCase(Locale.ROOT);
+    }
+
+    protected String message(Throwable t) {
+        return (t != null && t.getMessage() != null)
+                ? t.getMessage()
+                : (t != null ? t.getClass().getSimpleName() : HandlerConstants.UNKNOWN_ERROR);
+    }
+
+    private boolean isRateLimitException(Throwable t) {
+        String msg = safeLower(message(t));
+        return msg.contains("rate limit") ||
+                msg.contains("429") ||
+                msg.contains("too many requests") ||
+                msg.contains("quota exceeded");
+    }
+
+    private boolean isInvalidRequestException(Throwable t) {
+        String msg = safeLower(message(t));
+        return msg.contains("400") ||
+                msg.contains("bad request") ||
+                msg.contains("invalid request") ||
+                msg.contains("validation");
+    }
+
+    private boolean isAuthException(Throwable t) {
+        String msg = safeLower(message(t));
+        return msg.contains("401") ||
+                msg.contains("403") ||
+                msg.contains("unauthorized") ||
+                msg.contains("forbidden") ||
+                msg.contains("authentication") ||
+                msg.contains("api key");
+    }
+
+    /**
+     * Checks if the passed throwable (exception) is related to a timeout
+     * @param t Throwable to be checked
+     * @return true if the passed exception is about a reached timeout during the call to the llm
+     */
+    protected abstract boolean isTimeoutException(Throwable t);
+
+    /**
+     * Template method: the subclass talks to the LLM provider and returns the textual response.
+     *
+     * @param req The request to the LLM.
+     * @return The textual response from the LLM provider.
+     * @throws LlmException (Auth/RateLimit/Timeout/Provider/InvalidRequest) according to the case
+     */
+    protected LlmResponse invokeProvider(LlmRequest req) throws LlmException {
+        try {
+            return callTheLLM(req);
+        } catch (Exception ex) {
+            // Handle HTTP-like exceptions based on status codes or message patterns
+            if (isRateLimitException(ex)) {
+                LOGGER.debug(RATE_LIMIT_EXCEPTION_MESSAGE, ex);
+                throw new RateLimitException(message(ex), RETRY_AFTER_UNKNOWN_MS);
+            } else if (isInvalidRequestException(ex)) {
+                LOGGER.debug(INVALID_REQUEST_MESSAGE, ex);
+                throw new InvalidRequestException(ex);
+            } else if (isTimeoutException(ex)) {
+                LOGGER.debug(CLIENT_NETWORK_TIMEOUT_FORMAT, ex);
+                throw new TimeoutException(ex);
+            } else if (isAuthException(ex)) {
+                LOGGER.debug(AUTH_ERROR_MESSAGE_FORMAT, ex);
+                throw new AuthException(ex);
+            } else {
+                LOGGER.debug(GENERIC_PROVIDER_ERROR_FORMAT, ex);
+                throw new ProviderException(ex);
+            }
+        }
+    }
+
+    /**
+     * Abstract method that concrete implementations must override to handle the specific LLM API.
+     * @param request the LLM request containing the prompt and other parameters
+     * @return the LLM response with the answer and metadata
+     * @throws LlmException if there is an error calling the LLM
+     */
+    protected abstract LlmResponse callTheLLM(LlmRequest request) throws LlmException;
 }

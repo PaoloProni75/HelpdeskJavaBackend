@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>cloud.contoterzi</groupId>
@@ -7,52 +7,54 @@
         <version>1.0.0</version>
     </parent>
 
-    <artifactId>helpdesk-llm-azure-openai</artifactId>
+    <artifactId>helpdesk-storage-cos</artifactId>
+    <name>helpdesk-storage-cos</name>
     <packaging>jar</packaging>
-    <name>helpdesk-llm-azure-openai</name>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.release>17</maven.compiler.release>
-        <azure.openai.version>1.0.0-beta.16</azure.openai.version>
-        <azure.identity.version>1.13.2</azure.identity.version>
-    </properties>
-
-    <build>
-        <plugins>
-            <!-- Standard jar packaging only -->
-        </plugins>
-    </build>
+    <!-- Imports the AWS BOM here only, so the parent remains neutral -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>software.amazon.awssdk</groupId>
+                <artifactId>bom</artifactId>
+                <version>2.25.30</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
-        <!-- Core API (LlmClient contracts, etc.) -->
+        <!-- Project core -->
         <dependency>
             <groupId>cloud.contoterzi</groupId>
             <artifactId>helpdesk-core</artifactId>
-            <version>${project.version}</version>
+            <version>1.0.0</version>
         </dependency>
 
-        <!-- Azure OpenAI SDK -->
+        <!-- AWS SDK v2 S3 -->
         <dependency>
-            <groupId>com.azure</groupId>
-            <artifactId>azure-ai-openai</artifactId>
-            <version>${azure.openai.version}</version>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>s3</artifactId>
+            <version>2.25.30</version>
         </dependency>
-
-        <!-- Azure Identity for DefaultAzureCredential -->
         <dependency>
-            <groupId>com.azure</groupId>
-            <artifactId>azure-identity</artifactId>
-            <version>${azure.identity.version}</version>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>regions</artifactId>
         </dependency>
-
-        <!-- Jackson for JSON processing -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
         </dependency>
 
-        <!-- Test dependencies -->
+        <!-- SLF4J implementation for logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.36</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Test -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>

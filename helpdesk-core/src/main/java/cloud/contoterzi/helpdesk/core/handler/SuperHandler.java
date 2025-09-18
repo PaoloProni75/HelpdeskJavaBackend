@@ -15,11 +15,6 @@ public class SuperHandler implements HandlerConstants {
     protected static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass().getName());
 
     private static final ReentrantLock ENGINE_LOCK = new ReentrantLock();
-    public static final String INITIALIZING_ENGINE_ON_FIRST_REQUEST = "Initializing engine on first request";
-    public static final String ENGINE_INITIALIZED_SUCCESSFULLY = "Engine initialized successfully";
-    public static final String WITHIN_30_SECONDS_POTENTIAL_DEADLOCK = "Could not acquire engine lock within 30 seconds - potential deadlock";
-    public static final String ENGINE_INITIALIZATION_WAS_INTERRUPTED = "Engine initialization was interrupted";
-    public static final String FUNCTION_FAILURE_MESSAGE = "A failure occurred in the serverless function";
 
     protected HelpdeskEngine engine = null;
 

@@ -63,7 +63,11 @@
       "Bash(az monitor app-insights component list:*)",
       "WebSearch",
       "WebFetch(domain:mvnrepository.com)",
-      "WebFetch(domain:central.sonatype.com)"
+      "WebFetch(domain:central.sonatype.com)",
+      "Read(//Users/paoloproni/**)",
+      "Bash(grep:*)",
+      "Read(//private/etc/**)",
+      "Bash(ibmcloud ce app logs:*)"
     ],
     "deny": [],
     "ask": []

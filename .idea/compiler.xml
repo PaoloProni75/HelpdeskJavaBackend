@@ -7,7 +7,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="helpdesk-core" />
-        <module name="helpdesk-storage-s3" />
+        <module name="helpdesk-storage-cos" />
         <module name="helpdesk-similarity" />
         <module name="helpdesk-llm-ibm-watsonx" />
       </profile>
@@ -53,7 +53,9 @@
       <module name="helpdesk-llm-ollama-gptoss" target="17" />
       <module name="helpdesk-llm-openai" target="17" />
       <module name="helpdesk-storage-blob" target="17" />
+      <module name="helpdesk-storage-cus" target="17" />
       <module name="helpdesk-storage-fs" target="17" />
+      <module name="helpdesk-storage-s3" target="17" />
     </bytecodeTargetLevel>
   </component>
 </project>

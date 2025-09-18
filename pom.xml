@@ -162,7 +162,7 @@
             <modules>
                 <module>helpdesk-ibm-common</module>
                 <module>helpdesk-llm-ibm-watson</module>
-                <module>helpdesk-storage-s3</module> <!-- IBM Cos is compatible with S3 -->
+                <module>helpdesk-storage-cos</module>
             </modules>
         </profile>
         <!-- Complete Build: all the modules -->
@@ -172,6 +172,7 @@
                 <module>helpdesk-aws-common</module>
                 <module>helpdesk-azure-common</module>
                 <module>helpdesk-storage-s3</module>
+                <module>helpdesk-storage-cos</module>
                 <module>helpdesk-storage-blob</module>
                 <module>helpdesk-llm-aws-claude</module>
                 <module>helpdesk-llm-aws-nova</module>

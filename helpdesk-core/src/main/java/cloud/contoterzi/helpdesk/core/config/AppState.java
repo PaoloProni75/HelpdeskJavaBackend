@@ -1,27 +1,23 @@
 package cloud.contoterzi.helpdesk.core.config;
 
 import cloud.contoterzi.helpdesk.core.model.IKnowledge;
-
+import cloud.contoterzi.helpdesk.core.spi.StorageAdapter;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.net.URI;
-import java.util.Map;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.ServiceLoader;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.logging.Logger;
-import cloud.contoterzi.helpdesk.core.storage.StorageAdapter;
-import cloud.contoterzi.helpdesk.core.storage.spi.StorageAdapterProvider;
-import cloud.contoterzi.helpdesk.core.util.SpiLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public enum AppState {
     INSTANCE;
 
-    private static final Logger LOGGER = Logger.getLogger(AppState.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppState.class.getName());
     private static final String ALWAYS_CALL_LLM_ENV_VAR = "ALWAYS_CALL_LLM";
     private final AtomicBoolean initialized = new AtomicBoolean(false);
     private YamlConfig config;
@@ -32,15 +28,56 @@ public enum AppState {
         if (initialized.compareAndSet(false, true)) {
             LOGGER.info("Initializing AppState");
             this.config = loadConfigFromEnv();
+
+            // Simplified: Direct storage adapter loading via SPI
             String storageType = config.getString("storage.type");
-            final StorageAdapterProvider provider = SpiLoader.loadByKey(StorageAdapterProvider.class, storageType);
-            final StorageAdapter storage = provider.create(buildStorageUri(config), buildStorageOptions(config));
-            storageInit(storage, config);
-            knowledge = safeLoadKnownledgeBase(storage);
+            LOGGER.info("DEBUG: Storage type = " + storageType);
+
+            ServiceLoader<StorageAdapter> providers = ServiceLoader.load(StorageAdapter.class);
+
+            for (StorageAdapter adapter : providers) {
+                if (adapter.supports(storageType)) {
+                    LOGGER.info("Found storage adapter: {} for type: {}", adapter.getClass().getSimpleName(), storageType);
+                    try {
+                        adapter.init(config);
+                        knowledge = adapter.loadKnowledgeBase();
+                        break;
+                    } catch (Exception e) {
+                        LOGGER.error("Storage adapter initialization failed for type '{}': {}", storageType, e.getMessage());
+                        throw new IllegalStateException("Failed to initialize storage adapter for type '" + storageType + "'", e);
+                    }
+                }
+            }
+
+            if (knowledge == null)
+                raiseNoAdapterFound(storageType);
+
             final String env = System.getenv(ALWAYS_CALL_LLM_ENV_VAR);
             this.alwaysCallLlm = env != null && env.equalsIgnoreCase("true");
             LOGGER.info("AppState initialized");
         }
+    }
+
+    /**
+     * No adapter found - list available for debugging
+     */
+    private void raiseNoAdapterFound(String storageType) {
+        StringBuilder availableAdapters = new StringBuilder();
+        for (StorageAdapter adapter : ServiceLoader.load(StorageAdapter.class)) {
+            if (!availableAdapters.isEmpty()) {
+                availableAdapters.append(", ");
+            }
+            availableAdapters.append(adapter.getType());
+        }
+
+        StringBuilder message = new StringBuilder("No storage adapter found for type: ");
+        message.append(storageType);
+        if (!availableAdapters.isEmpty())
+            message.append(". Available adapters: ").append(availableAdapters);
+        else
+            message.append(". No storage adapters are registered via SPI.");
+
+        throw new IllegalStateException(message.toString());
     }
 
     private static YamlConfig loadConfigFromEnv() {
@@ -49,11 +86,11 @@ public enum AppState {
 
         try (InputStream in = getConfigInputStream(path)) {
             YamlConfig config = new YamlConfig(in);
-            LOGGER.info("DEBUG: YAML loaded successfully. Raw data: " + config.getRawData());
-            LOGGER.info("DEBUG: Storage section: " + config.get("storage"));
+            LOGGER.info("DEBUG: YAML loaded successfully. Raw data: {}", config.getRawData());
+            LOGGER.info("DEBUG: Storage section: {}", config.get("storage"));
             return config;
         } catch (Exception e) {
-            LOGGER.severe("DEBUG: Config loading failed with error: " + e.getMessage());
+            LOGGER.error("DEBUG: Config loading failed with error: {}", e.getMessage());
             throw new IllegalStateException("Cannot read config: %s".formatted(path), e);
         }
     }
@@ -71,38 +108,22 @@ public enum AppState {
 
             InputStream resourceStream = AppState.class.getClassLoader().getResourceAsStream(resourcePath);
             if (resourceStream == null) {
-                LOGGER.severe("DEBUG: Resource not found on classpath: " + resourcePath);
-                LOGGER.info("DEBUG: Trying to load from current directory as fallback");
+                LOGGER.error("DEBUG: Resource not found on classpath: {}", resourcePath);
+                LOGGER.error("DEBUG: Trying to load from current directory as fallback");
                 // Fallback: try to load from current directory
                 try {
                     return Files.newInputStream(Path.of(resourcePath));
                 } catch (IOException fallbackEx) {
-                    LOGGER.severe("DEBUG: Fallback also failed: " + fallbackEx.getMessage());
-                    throw new IOException("Resource not found on classpath: " + resourcePath + ", fallback also failed: " + fallbackEx.getMessage());
+                    LOGGER.error("DEBUG: Fallback also failed: {}", fallbackEx.getMessage());
+                    throw new IOException("Resource not found on classpath: %s, fallback also failed: %s".formatted(resourcePath, fallbackEx.getMessage()));
                 }
             }
             LOGGER.info("DEBUG: Successfully loaded from classpath");
             return resourceStream;
         } else {
             LOGGER.info("AppState loading the configuration from a file");
-            LOGGER.info("DEBUG: File path: " + path);
+            LOGGER.info("DEBUG: File path: {}", path);
             return Files.newInputStream(Path.of(path));
-        }
-    }
-
-    private static void storageInit(StorageAdapter storage, YamlConfig config) {
-        try {
-            storage.init(config);
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
-        }
-    }
-
-    private static List<IKnowledge> safeLoadKnownledgeBase(StorageAdapter s) {
-        try {
-            return s.loadKnowledgeBase();
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
         }
     }
 
@@ -135,61 +156,5 @@ public enum AppState {
         return alwaysCallLlm;
     }
 
-    private static URI buildStorageUri(YamlConfig config) {
-        String storageType = config.getString("storage.type");
-        LOGGER.info("DEBUG: Storage type = " + storageType);
-
-        if ("blob".equals(storageType)) {
-            String container = config.getString("storage.container");
-            String blob = config.getString("storage.blob");
-            LOGGER.info("DEBUG: blob container = " + container + ", blob = " + blob);
-
-            if (container == null || blob == null) {
-                LOGGER.severe("DEBUG: Configuration error - container=" + container + ", blob=" + blob);
-                LOGGER.info("DEBUG: Raw YAML data = " + config.getRawData());
-                throw new IllegalStateException("Storage container and blob must be configured for blob");
-            }
-
-            return URI.create("blob://" + container + "/" + blob);
-        } else if ("s3".equals(storageType)) {
-            String bucket = config.getString("storage.bucket");
-            String prefix = config.getString("storage.prefix", "");
-            String filename = config.getString("storage.filename");
-
-            if (bucket == null || filename == null) {
-                throw new IllegalStateException("Storage bucket and filename must be configured for s3");
-            }
-
-            String key = (prefix != null && !prefix.trim().isEmpty())
-                    ? prefix.trim() + "/" + filename.trim()
-                    : filename.trim();
-
-            if (key.startsWith("/")) key = key.substring(1);
-
-            return URI.create("s3://" + bucket + "/" + key);
-        } else {
-            throw new IllegalStateException("Unsupported storage type: " + storageType);
-        }
-    }
-
-    private static Map<String, String> buildStorageOptions(YamlConfig config) {
-        String storageType = config.getString("storage.type");
-
-        if ("blob".equals(storageType)) {
-            String connectionString = config.getString("storage.connectionString");
-            if (connectionString == null) {
-                throw new IllegalStateException("Storage connectionString must be configured for azure-blob");
-            }
-            return Map.of("connectionString", connectionString);
-        } else if ("s3".equals(storageType)) {
-            String region = config.getString("storage.region");
-            if (region == null) {
-                throw new IllegalStateException("Storage region must be configured for s3");
-            }
-            return Map.of("region", region);
-        } else {
-            throw new IllegalStateException("Unsupported storage type: " + storageType);
-        }
-    }
 
 }
