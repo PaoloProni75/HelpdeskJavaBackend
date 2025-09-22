@@ -67,7 +67,12 @@
       "Read(//Users/paoloproni/**)",
       "Bash(grep:*)",
       "Read(//private/etc/**)",
-      "Bash(ibmcloud ce app logs:*)"
+      "Bash(ibmcloud ce app logs:*)",
+      "WebFetch(domain:quarkus.io)",
+      "Bash(aws lambda:*)",
+      "Bash(response.json)",
+      "Bash(aws logs:*)",
+      "Bash(time aws:*)"
     ],
     "deny": [],
     "ask": []

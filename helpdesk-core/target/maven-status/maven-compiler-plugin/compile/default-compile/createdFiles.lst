@@ -2,6 +2,7 @@ cloud/contoterzi/helpdesk/core/spi/SimilarityService.class
 cloud/contoterzi/helpdesk/core/llm/AbstractLlmClient.class
 cloud/contoterzi/helpdesk/core/llm/RateLimitException.class
 cloud/contoterzi/helpdesk/core/model/LlmResponse.class
+cloud/contoterzi/helpdesk/core/model/impl/AppConfig.class
 cloud/contoterzi/helpdesk/core/model/IKnowledge.class
 cloud/contoterzi/helpdesk/core/config/YamlConfig.class
 cloud/contoterzi/helpdesk/core/llm/InvalidRequestException.class
@@ -22,7 +23,9 @@ cloud/contoterzi/helpdesk/core/model/HelpdeskRequest.class
 cloud/contoterzi/helpdesk/core/util/SpiLoader.class
 cloud/contoterzi/helpdesk/core/model/impl/KnowledgeEntry.class
 cloud/contoterzi/helpdesk/core/model/LlmBaseFields.class
+cloud/contoterzi/helpdesk/core/model/ILlmConfig.class
 cloud/contoterzi/helpdesk/core/llm/LlmException.class
 cloud/contoterzi/helpdesk/core/llm/ProviderException.class
 cloud/contoterzi/helpdesk/core/llm/AuthException.class
 cloud/contoterzi/helpdesk/core/spi/StorageAdapter.class
+cloud/contoterzi/helpdesk/core/model/impl/LlmConfig.class

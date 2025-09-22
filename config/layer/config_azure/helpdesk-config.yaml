@@ -20,7 +20,7 @@ llm:
 
 storage:
   type: blob
-  connectionString: "DefaultEndpointsProtocol=https;EndpointSuffix=core.windows.net;AccountName=contoterzistorage;AccountKey=59JmaHDODVK+TToDczNPQv2J+hR0Ha4W52PabkYfBSlLMxHseRyjtCTHAWUjTOZVxm0K5pVpAFhY+AStgPhdWg=="
+  connectionString: "DefaultEndpointsProtocol=https;EndpointSuffix=core.windows.net;AccountName=contoterzistorage;AccountKey=<putyourkey>"
   container: "knowledgebase"
   blob: "kb_contoterzi.json"
 

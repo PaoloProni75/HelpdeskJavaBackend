@@ -4,7 +4,7 @@ import cloud.contoterzi.aws.common.AbstractBedrockDriver;
 import cloud.contoterzi.helpdesk.core.llm.LlmException;
 import cloud.contoterzi.helpdesk.core.model.LlmRequest;
 import cloud.contoterzi.helpdesk.core.model.LlmResponse;
-import cloud.contoterzi.helpdesk.core.model.impl.AppConfig;
+import cloud.contoterzi.helpdesk.core.config.YamlConfig;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import software.amazon.awssdk.core.SdkBytes;
 import software.amazon.awssdk.regions.Region;
@@ -14,9 +14,14 @@ import software.amazon.awssdk.services.bedrockruntime.model.InvokeModelResponse;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import cloud.contoterzi.helpdesk.core.model.ILlmConfig;
+import java.net.SocketTimeoutException;
+import java.net.http.HttpTimeoutException;
+import java.nio.channels.InterruptedByTimeoutException;
+import java.io.InterruptedIOException;
+import software.amazon.awssdk.core.exception.SdkServiceException;
 
 /**
  * Thin delegate that calls AWS Bedrock Nova model using the InvokeModel API.
@@ -123,29 +128,27 @@ public class NovaClientBedrock extends AbstractBedrockDriver {
     }
 
     @Override
-    public void init(AppConfig config) {
-        ILlmConfig llmConfig = config.getLlm();
-        this.modelId = llmConfig.getModelId();
-        this.maxTokens = llmConfig.getMaxTokens();
-        this.temperature = llmConfig.getTemperature();
-//        this.region = llmConfig.getRegion();
+    public void init(YamlConfig config) {
+        this.modelId = config.getString("llm.model", "amazon.nova-micro-v1:0");
+        this.maxTokens = config.getInt("llm.maxTokens", 2048);
+        this.temperature = config.getDouble("llm.temperature", 0.7);
         // topP keeps default value (0.9)
 
-        // Initialize prompts configuration with null-safety
-        if (llmConfig.getPrompts() != null) {
-            this.systemPrompt = llmConfig.getPrompts().getPreamble() != null
-                ? llmConfig.getPrompts().getPreamble() : "";
+        // Initialize system prompt with null-safety
+        String configPrompt = config.getString("llm.prompts.preamble");
+        if (configPrompt != null && !configPrompt.trim().isEmpty()) {
+            this.systemPrompt = configPrompt;
         }
 
         synchronized (CLIENT_LOCK) {
             if (staticClient == null) {
-                String region = llmConfig.getRegion();
+                String region = config.getString("llm.region", "us-east-1");
                 if (region == null || region.trim().isEmpty()) {
                     throw new IllegalArgumentException("AWS region cannot be null or empty");
                 }
 
                 staticClient = BedrockRuntimeClient.builder()
-                        .region(Region.of(llmConfig.getRegion()))
+                        .region(Region.of(region))
                         .build();
 /*
                 System.out.println("DEBUG: BedrockRuntimeClient created with region = " + llmConfig.getRegion());
@@ -153,5 +156,35 @@ public class NovaClientBedrock extends AbstractBedrockDriver {
 */
             }
         }
+    }
+
+    @Override
+    protected boolean isTimeoutException(Throwable t) {
+        // HTTP status codes for timeouts
+        final int HTTP_REQUEST_TIMEOUT = 408;
+        final int HTTP_GATEWAY_TIMEOUT = 504;
+
+        // Check for service status codes that are timeout-like
+        if (t instanceof SdkServiceException sse) {
+            int sc = sse.statusCode();
+            if (sc == HTTP_REQUEST_TIMEOUT || sc == HTTP_GATEWAY_TIMEOUT) return true;
+        }
+
+        // Check for classical timeout types in the cause chain
+        Throwable cause = t;
+        for (int i = 0; i < 10 && cause != null; i++) {
+            if (cause instanceof SocketTimeoutException ||
+                cause instanceof HttpTimeoutException ||
+                cause instanceof InterruptedByTimeoutException ||
+                cause instanceof InterruptedIOException) {
+                return true;
+            }
+            cause = cause.getCause();
+        }
+
+        // Fallback on message patterns
+        String msg = (t != null && t.getMessage() != null) ? t.getMessage().toLowerCase(Locale.ROOT) : "";
+        return msg.contains("timed out") || msg.contains("timeout") ||
+               msg.contains("read timed out") || msg.contains("connection timed out");
     }
 }

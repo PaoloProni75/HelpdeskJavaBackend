@@ -1,0 +1,32 @@
+llm:
+  type: watsonx
+  watson:
+    endpoint: "https://eu-de.ml.cloud.ibm.com"
+    apiKey: "FgV-ENb7IG6AcyB2VlYHioD09sl1G8v6hGxFWq0qhxKm"
+    projectId: "ad3b95f9-13cf-4b33-8de7-97fdbacf5f83"
+    model: "ibm/granite-3-3-8b-instruct "
+    version: "2024-05-31"
+  temperature: 0.5
+  maxTokens: 1024
+  prompts:
+    preamble: >- 
+              You are a help desk assistant for an agricultural subcontractor management software. 
+              Answer clearly and helpfully only if the question is relevant to the software. 
+              If it is not, state that you cannot answer. 
+              If the user needs human intervention, include EXACTLY the phrase 'contact support' once in the answer. 
+              If no human is required, DO NOT include that phrase.
+    template: "%s%n%nExamples:%n%s%n%nUser question: %s%nAnswer:"
+    contactSupportPhrase: "contact support"
+
+storage:
+  type: cos
+  endpoint: "https://s3.eu-de.cloud-object-storage.appdomain.cloud"
+  bucket: "ct-helpdesk-kb"
+  key: "kb_contoterzi.json"
+  hmac_access_key_id: "<put your key here>"  # KEY with READ permissions (Object Reader/Writer)
+  hmac_secret_access_key: "<put your access key here>"
+
+similarity:
+  type: cosine
+  fewShot: 10000  # How many examples to use for similarity calculation
+  threshold: 0.8  # Similarity threshold (>= threshold -> the response comes directly from the kb, otherwise -> the response is generated)

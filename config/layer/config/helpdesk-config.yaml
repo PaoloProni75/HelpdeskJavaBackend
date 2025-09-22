@@ -1,30 +1,26 @@
 llm:
-  type: watsonx
-  watson:
-    endpoint: "https://eu-de.ml.cloud.ibm.com"
-    apiKey: "FgV-ENb7IG6AcyB2VlYHioD09sl1G8v6hGxFWq0qhxKm"
-    projectId: "ad3b95f9-13cf-4b33-8de7-97fdbacf5f83"
-    model: "ibm/granite-3-3-8b-instruct "
-    version: "2024-05-31"
+  type: nova
+  region: eu-south-1
+  modelId: arn:aws:bedrock:eu-south-1:339712862677:inference-profile/eu.amazon.nova-lite-v1:0
+  llmVersion: bedrock-2023-05-31
   temperature: 0.5
-  maxTokens: 1024
+  maxTokens: 512
   prompts:
-    preamble: >- 
-              You are a help desk assistant for an agricultural subcontractor management software. 
-              Answer clearly and helpfully only if the question is relevant to the software. 
-              If it is not, state that you cannot answer. 
-              If the user needs human intervention, include EXACTLY the phrase 'contact support' once in the answer. 
-              If no human is required, DO NOT include that phrase.
+    preamble: >-
+      You are a help desk assistant for an agricultural subcontractor management software. 
+      Answer clearly and helpfully only if the question is relevant to the software. 
+      If it is not, state that you cannot answer. 
+      If the user needs human intervention, include EXACTLY the phrase 'contact support' once in the answer. 
+      If no human is required, DO NOT include that phrase.
     template: "%s%n%nExamples:%n%s%n%nUser question: %s%nAnswer:"
     contactSupportPhrase: "contact support"
 
 storage:
-  type: cos
-  endpoint: "https://s3.eu-de.cloud-object-storage.appdomain.cloud"
-  bucket: "ct-helpdesk-kb"
-  key: "kb_contoterzi.json"
-  hmac_access_key_id: "587a0e7b3d8f430ea6a4ddeb037cd37b"  # KEY with READ permissions (Object Reader/Writer)
-  hmac_secret_access_key: "e1d6a0d1089fd2c7aef679bc37602c70ccb5792d815c075c"
+  type: s3
+  region: eu-south-1
+  bucket: kb-contoterzi-milan
+  prefix: ""
+  filename: kb_helpdesk_contoterzi_bedrock.json
 
 similarity:
   type: cosine

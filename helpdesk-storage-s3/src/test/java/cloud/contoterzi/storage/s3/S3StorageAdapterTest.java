@@ -1,105 +1,126 @@
 package cloud.contoterzi.storage.s3;
 
+import cloud.contoterzi.helpdesk.core.spi.StorageAdapter;
 import cloud.contoterzi.helpdesk.core.config.YamlConfig;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import software.amazon.awssdk.regions.Region;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
 class S3StorageAdapterTest {
 
-    @Test
-    void testConstructorValidation() {
-        // Test null region
-        assertThrows(NullPointerException.class, () -> 
-            new S3StorageAdapter(null, "bucket", "key"));
-            
-        // Test null bucket
-        assertThrows(NullPointerException.class, () -> 
-            new S3StorageAdapter(Region.US_EAST_1, null, "key"));
-            
-        // Test null key
-        assertThrows(NullPointerException.class, () -> 
-            new S3StorageAdapter(Region.US_EAST_1, "bucket", null));
+    private S3StorageAdapter adapter;
+
+    @Mock
+    private YamlConfig mockConfig;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        adapter = new S3StorageAdapter();
     }
 
     @Test
-    void testType() {
-        S3StorageAdapter adapter = new S3StorageAdapter(Region.US_EAST_1, "test-bucket", "test-key");
-        assertEquals("s3", adapter.type());
+    void testGetType() {
+        assertEquals("s3", adapter.getType());
     }
 
     @Test
-    void testInit() {
-        S3StorageAdapter adapter = new S3StorageAdapter(Region.US_EAST_1, "test-bucket", "test-key");
-
-        // init should not throw and should do nothing (adapter is already configured)
-        assertDoesNotThrow(() -> adapter.init(null));
+    void testSupportsS3() {
+        assertTrue(adapter.supports("s3"));
     }
 
     @Test
-    void testConstructorCreatesS3Client() {
-        // Test that constructor doesn't throw and creates adapter successfully
-        assertDoesNotThrow(() -> {
-            S3StorageAdapter adapter = new S3StorageAdapter(
-                Region.EU_CENTRAL_1, 
-                "my-bucket", 
-                "path/to/knowledge.json"
-            );
-            assertEquals("s3", adapter.type());
-        });
+    void testDoesNotSupportOtherTypes() {
+        assertFalse(adapter.supports("blob"));
+        assertFalse(adapter.supports("cos"));
+        assertFalse(adapter.supports("file"));
+        assertFalse(adapter.supports(null));
+        assertFalse(adapter.supports(""));
     }
 
     @Test
-    void testConstructorWithDifferentRegions() {
-        // Test different AWS regions
-        assertDoesNotThrow(() -> {
-            new S3StorageAdapter(Region.US_EAST_1, "bucket", "key");
-            new S3StorageAdapter(Region.EU_WEST_1, "bucket", "key");
-            new S3StorageAdapter(Region.AP_NORTHEAST_1, "bucket", "key");
-        });
+    void testInitMissingBucket() {
+        when(mockConfig.getString("storage.bucket")).thenReturn(null);
+        when(mockConfig.getString("storage.filename")).thenReturn("test.json");
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+            adapter.init(mockConfig));
+
+        assertTrue(exception.getMessage().contains("S3 bucket cannot be null or empty"));
     }
 
     @Test
-    void testConstructorWithDifferentBucketNames() {
-        // Test different bucket naming patterns
-        assertDoesNotThrow(() -> {
-            new S3StorageAdapter(Region.US_EAST_1, "simple-bucket", "key");
-            new S3StorageAdapter(Region.US_EAST_1, "my.bucket.with.dots", "key");
-            new S3StorageAdapter(Region.US_EAST_1, "bucket-with-dashes", "key");
-            new S3StorageAdapter(Region.US_EAST_1, "123bucket", "key");
-        });
+    void testInitEmptyBucket() {
+        when(mockConfig.getString("storage.bucket")).thenReturn("");
+        when(mockConfig.getString("storage.filename")).thenReturn("test.json");
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+            adapter.init(mockConfig));
+
+        assertTrue(exception.getMessage().contains("S3 bucket cannot be null or empty"));
     }
 
     @Test
-    void testConstructorWithDifferentKeys() {
-        // Test different S3 key patterns
-        assertDoesNotThrow(() -> {
-            new S3StorageAdapter(Region.US_EAST_1, "bucket", "simple-key.json");
-            new S3StorageAdapter(Region.US_EAST_1, "bucket", "path/to/nested/key.json");
-            new S3StorageAdapter(Region.US_EAST_1, "bucket", "very/deep/nested/path/file.json");
-            new S3StorageAdapter(Region.US_EAST_1, "bucket", "key_with_underscores.json");
-        });
+    void testInitMissingFilename() {
+        when(mockConfig.getString("storage.bucket")).thenReturn("test-bucket");
+        when(mockConfig.getString("storage.filename")).thenReturn(null);
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+            adapter.init(mockConfig));
+
+        assertTrue(exception.getMessage().contains("S3 filename cannot be null or empty"));
     }
 
     @Test
-    void testLoadKnowledgeBaseMethodExists() {
-        // Test that the method exists and is callable (though we can't test actual S3 interaction)
-        S3StorageAdapter adapter = new S3StorageAdapter(Region.US_EAST_1, "test-bucket", "test-key");
-        
-        // The method should exist and be callable
-        // We can't test actual S3 interaction without credentials/network
-        assertNotNull(adapter);
-        assertEquals("s3", adapter.type());
-        
-        // Verify that the method signature is correct
-        try {
-            // This will likely fail with AWS exception, but confirms method exists
-            adapter.loadKnowledgeBase();
-        } catch (Exception e) {
-            // Expected - we don't have valid AWS credentials in test environment
-            // This just confirms the method exists and is callable
-            assertNotNull(e);
-        }
+    void testInitEmptyFilename() {
+        when(mockConfig.getString("storage.bucket")).thenReturn("test-bucket");
+        when(mockConfig.getString("storage.filename")).thenReturn("");
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+            adapter.init(mockConfig));
+
+        assertTrue(exception.getMessage().contains("S3 filename cannot be null or empty"));
+    }
+
+    @Test
+    void testInitValidConfigWithoutPrefix() {
+        when(mockConfig.getString("storage.bucket")).thenReturn("test-bucket");
+        when(mockConfig.getString("storage.filename")).thenReturn("knowledge.json");
+        when(mockConfig.getString("storage.prefix", "")).thenReturn("");
+        when(mockConfig.getString("storage.region", "us-east-1")).thenReturn("us-east-1");
+
+        // With valid config, initialization should succeed (S3 client gets created)
+        assertDoesNotThrow(() -> adapter.init(mockConfig));
+
+        // Verify adapter is configured correctly
+        assertEquals("s3", adapter.getType());
+    }
+
+    @Test
+    void testInitValidConfigWithPrefix() {
+        when(mockConfig.getString("storage.bucket")).thenReturn("test-bucket");
+        when(mockConfig.getString("storage.filename")).thenReturn("knowledge.json");
+        when(mockConfig.getString("storage.prefix", "")).thenReturn("data/v1");
+        when(mockConfig.getString("storage.region", "us-east-1")).thenReturn("eu-west-1");
+
+        // With valid config, initialization should succeed (S3 client gets created)
+        assertDoesNotThrow(() -> adapter.init(mockConfig));
+
+        // Verify adapter is configured correctly
+        assertEquals("s3", adapter.getType());
+    }
+
+    @Test
+    void testLoadKnowledgeBaseWithoutInit() {
+        // Should fail because adapter is not initialized
+        RuntimeException exception = assertThrows(RuntimeException.class, () ->
+            adapter.loadKnowledgeBase());
+
+        // Will throw NullPointerException because s3Client is null
+        assertInstanceOf(RuntimeException.class, exception);
     }
 }

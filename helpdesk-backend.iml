@@ -2,15 +2,15 @@
 <module version="4">
   <component name="AdditionalModuleElements">
     <content url="file://$MODULE_DIR$" dumb="true">
+      <sourceFolder url="file://$MODULE_DIR$/helpdesk-aws-common/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/helpdesk-azure-common/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/helpdesk-llm-aws-claude/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/helpdesk-llm-aws-claude/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/helpdesk-llm-aws-nova/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/helpdesk-llm-aws-nova/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/helpdesk-llm-ollama-gptoss/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/helpdesk-llm-ollama-gptoss/src/main/resources" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/helpdesk-azure-common/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/helpdesk-storage-blob/src/main/java" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/helpdesk-aws-common/src/main/java" isTestSource="false" />
     </content>
   </component>
 </module>
