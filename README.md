@@ -107,7 +107,7 @@ Each module is independently testable and follows clean architecture principles:
 
 ```bash
 # Clone repository
-git clone https://github.com/paoloproni/helpdesk-backend.git
+git clone https://github.com/PaoloProni75/HelpdeskJavaBackend.git
 cd helpdesk-backend
 
 # Set configuration path
